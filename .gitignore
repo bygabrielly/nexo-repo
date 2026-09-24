@@ -1,0 +1,9 @@
+# Banco de dados, e-mails simulados e resultados gerados ao executar o protótipo
+data/
+# Imagens enviadas pelos usuários (as imagens de demonstração são recriadas a partir de seed-assets/)
+public/uploads/
+node_modules/
+# Arquivos do sistema e temporários do Word
+.DS_Store
+Thumbs.db
+~$*

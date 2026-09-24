@@ -1,0 +1,110 @@
+erDiagram
+  direction LR
+  users ||--o{ services : "publica"
+  users ||--o{ portfolio_items : "possui"
+  users ||--o{ projects : "publica (cliente)"
+  projects ||--o{ proposals : "recebe"
+  users ||--o{ proposals : "envia (freelancer)"
+  users ||--o{ orders : "cliente / freelancer"
+  services |o--o{ orders : "origem"
+  proposals |o--o| orders : "origem"
+  orders ||--o{ order_events : "histórico"
+  orders ||--o| reviews : "cliente avalia"
+  orders ||--o| client_reviews : "freelancer avalia"
+  users ||--o{ conversations : "participa"
+  conversations ||--o{ chat_messages : "contém"
+  users ||--o{ password_resets : "solicita"
+
+  users {
+    int id PK
+    text name
+    text email UK
+    text password_hash
+    text role "cliente | freelancer"
+    text avatar_url
+    text consent_at
+    text deleted_at
+  }
+  services {
+    int id PK
+    int user_id FK
+    text category
+    real price "nulo = a combinar"
+    int delivery_days
+    text deleted_at
+  }
+  portfolio_items {
+    int id PK
+    int user_id FK
+    text deleted_at
+  }
+  projects {
+    int id PK
+    int client_id FK
+    text category
+    text status
+  }
+  proposals {
+    int id PK
+    int project_id FK
+    int freelancer_id FK
+    real price
+    int delivery_days
+    text status
+  }
+  orders {
+    int id PK
+    int client_id FK
+    int freelancer_id FK
+    int service_id FK
+    int project_id FK
+    int proposal_id FK
+    real price
+    int delivery_days
+    text status
+    text completed_at
+  }
+  order_events {
+    int id PK
+    int order_id FK
+    int actor_id FK
+    text event
+  }
+  reviews {
+    int id PK
+    int order_id FK "único"
+    int client_id FK
+    int freelancer_id FK
+    int service_id FK
+    int rating "1 a 5"
+    text comment
+    text published_at
+  }
+  client_reviews {
+    int id PK
+    int order_id FK "único"
+    int client_id FK
+    int freelancer_id FK
+    int rating "1 a 5"
+    text comment
+    text published_at
+  }
+  conversations {
+    int id PK
+    int client_id FK
+    int freelancer_id FK
+    int service_id FK
+    int project_id FK
+    int order_id FK
+  }
+  chat_messages {
+    int id PK
+    int conversation_id FK
+    int sender_id FK
+    text content
+  }
+  password_resets {
+    int id PK
+    int user_id FK
+    text token_hash UK
+  }

@@ -1,0 +1,19 @@
+sequenceDiagram
+  autonumber
+  actor C as Visitante ou cliente
+  participant N as Navegador
+  participant R as routes/public.js
+  participant D as lib/repo.js
+  participant B as SQLite
+  participant V as views/
+  C->>N: termo, categoria, preço,<br/>prazo, nota e ordenação
+  N->>R: GET /servicos?q=...&preco_max=...&ordem=...<br/>(via server.js)
+  R->>R: valida e normaliza os filtros
+  R->>D: searchServices(filtros, página)
+  D->>D: WHERE só com os filtros informados,<br/>valores como parâmetros (?)
+  D->>B: SELECT COUNT(*) ...<br/>SELECT ... LIMIT ? OFFSET ?
+  B-->>D: total e serviços da página
+  D-->>R: { total, rows }
+  R->>V: servicesPage(result, filters)
+  V-->>R: HTML (dados com escape)
+  R-->>N: 200 — resultados, filtros e paginação

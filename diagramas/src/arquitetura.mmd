@@ -1,0 +1,36 @@
+flowchart TB
+  NAV["<b>Navegador</b><br/>HTML + CSS + public/app.js<br/>(confirmações e validação da senha)"]
+  subgraph APP["Camada de aplicação — server.js"]
+    direction LR
+    A1["Sessão e usuário<br/>(lib/session.js)"]
+    A2["Controle de acesso<br/>por autenticação e papel"]
+    A3["Token anti-CSRF e<br/>cabeçalhos de segurança<br/>(lib/security.js)"]
+    A4["Tarefas por tempo<br/>(conclusão automática,<br/>publicação de avaliações)"]
+  end
+  subgraph REG["Regras de negócio — routes/"]
+    direction LR
+    R1["auth · account"]
+    R2["services · public"]
+    R3["orders"]
+    R4["projects"]
+    R5["messages · profile"]
+  end
+  VIEW["<b>Camada de apresentação — views/</b><br/>layout, páginas e componentes (escape de HTML)"]
+  subgraph DADOS["Camada de acesso a dados"]
+    direction LR
+    D1["lib/repo.js<br/>consultas preparadas"]
+    D2["lib/db.js<br/>esquema e migrações"]
+  end
+  APOIO["<b>Módulos de apoio</b><br/>lib/auth.js (scrypt) · lib/mailer.js (e-mail simulado)<br/>lib/http-helpers.js · lib/config.js"]
+  DB[("SQLite<br/>data/database.sqlite")]
+  FILES[("Arquivos<br/>public/uploads · data/outbox")]
+
+  NAV -- "requisição HTTP (GET/POST)" --> APP
+  APP -- "página HTML pronta" --> NAV
+  APP --> REG
+  REG --> VIEW
+  REG --> DADOS
+  REG -.-> APOIO
+  D1 --> DB
+  D2 --> DB
+  APOIO -.-> FILES

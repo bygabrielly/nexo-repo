@@ -1,0 +1,16 @@
+stateDiagram-v2
+  [*] --> solicitado : cliente contrata um serviço
+  [*] --> em_andamento : cliente aceita uma proposta
+  solicitado --> em_andamento : freelancer aceita
+  solicitado --> recusado : freelancer recusa
+  solicitado --> cancelado : cancelamento com motivo
+  em_andamento --> entregue : freelancer entrega
+  em_andamento --> cancelado : cancelamento com motivo
+  entregue --> em_andamento : cliente pede ajustes
+  entregue --> concluido : cliente aprova
+  entregue --> concluido : 3 dias sem resposta
+  concluido --> [*] : avaliações mútuas (14 dias)
+  recusado --> [*]
+  cancelado --> [*]
+  em_andamento : em andamento
+  concluido : concluído

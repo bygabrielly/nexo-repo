@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: #ffffff; padding: 30px; }
+  .wrap { position: relative; width: 960px; height: 620px; }
+  .entity {
+    position: absolute;
+    width: 260px;
+    border: 1.6px solid #4a4458;
+    border-radius: 6px;
+    background: #f7f5fb;
+    overflow: hidden;
+  }
+  .entity h4 {
+    margin: 0; padding: 8px 10px; background: #ded2f2; font-size: 14px;
+    text-align: center; border-bottom: 1.6px solid #4a4458;
+  }
+  .entity ul { list-style: none; margin: 0; padding: 6px 12px; font-size: 11.5px; color: #211a2e; }
+  .entity li { padding: 2px 0; }
+  .pk { font-weight: bold; text-decoration: underline; }
+  .fk { font-style: italic; color: #4a4458; }
+  #users { left: 20px; top: 20px; }
+  #portfolio { left: 20px; top: 330px; }
+  #services { left: 350px; top: 300px; }
+  #messages { left: 660px; top: 20px; }
+  svg.rel { position: absolute; left: 0; top: 0; overflow: visible; }
+  .rel-label { position: absolute; font-size: 11px; color: #4a4458; background: #fff; padding: 0 4px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <svg class="rel" width="960" height="620">
+    <!-- users (1) -> services (N) -->
+    <line x1="270" y1="200" x2="350" y2="300" stroke="#4a4458" stroke-width="1.6"/>
+    <!-- services (1) -> messages (N) via service_id -->
+    <line x1="610" y1="300" x2="700" y2="170" stroke="#4a4458" stroke-width="1.6"/>
+    <!-- users (1) -> messages (N) via sender_id/receiver_id -->
+    <line x1="280" y1="70" x2="660" y2="90" stroke="#4a4458" stroke-width="1.6" stroke-dasharray="4 3"/>
+    <!-- users (1) -> portfolio_items (N) -->
+    <line x1="150" y1="258" x2="150" y2="330" stroke="#4a4458" stroke-width="1.6"/>
+  </svg>
+  <span class="rel-label" style="left:245px; top:210px;">1</span>
+  <span class="rel-label" style="left:335px; top:290px;">N</span>
+  <span class="rel-label" style="left:600px; top:295px;">1</span>
+  <span class="rel-label" style="left:690px; top:175px;">N</span>
+  <span class="rel-label" style="left:285px; top:58px;">1</span>
+  <span class="rel-label" style="left:640px; top:78px;">N</span>
+  <span class="rel-label" style="left:160px; top:262px;">1</span>
+  <span class="rel-label" style="left:160px; top:314px;">N</span>
+
+  <div class="entity" id="users">
+    <h4>users</h4>
+    <ul>
+      <li class="pk">id (PK)</li>
+      <li>name</li>
+      <li>email (único)</li>
+      <li>password_hash</li>
+      <li>role (cliente | freelancer)</li>
+      <li>area</li>
+      <li>bio</li>
+      <li>avatar_url</li>
+      <li>cover_url</li>
+      <li>linkedin_url</li>
+      <li>created_at</li>
+    </ul>
+  </div>
+
+  <div class="entity" id="portfolio">
+    <h4>portfolio_items</h4>
+    <ul>
+      <li class="pk">id (PK)</li>
+      <li class="fk">user_id (FK &rarr; users.id)</li>
+      <li>image_url</li>
+      <li>title</li>
+      <li>description</li>
+      <li>created_at</li>
+    </ul>
+  </div>
+
+  <div class="entity" id="services">
+    <h4>services</h4>
+    <ul>
+      <li class="pk">id (PK)</li>
+      <li class="fk">user_id (FK &rarr; users.id)</li>
+      <li>title</li>
+      <li>description</li>
+      <li>category</li>
+      <li>price</li>
+      <li>keywords</li>
+      <li>created_at</li>
+    </ul>
+  </div>
+
+  <div class="entity" id="messages">
+    <h4>messages</h4>
+    <ul>
+      <li class="pk">id (PK)</li>
+      <li class="fk">service_id (FK &rarr; services.id)</li>
+      <li class="fk">sender_id (FK &rarr; users.id)</li>
+      <li class="fk">receiver_id (FK &rarr; users.id)</li>
+      <li>content</li>
+      <li>created_at</li>
+    </ul>
+  </div>
+
+  <div style="position:absolute; left:20px; top:520px; width:900px; font-size:11.5px; color:#4a4458; line-height:1.5;">
+    Um usuário (freelancer) publica vários serviços e vários itens de portfólio (1:N em ambos os casos). Um serviço
+    pode receber várias mensagens (1:N). Um usuário pode enviar e receber várias mensagens, papéis representados
+    pelas chaves estrangeiras sender_id e receiver_id, ambas referenciando users.id (relação 1:N tracejada).
+  </div>
+</div>
+</body>
+</html>

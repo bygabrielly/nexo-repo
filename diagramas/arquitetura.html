@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: #fff; }
+  .wrap { width: 900px; padding: 22px; color: #211a2e; }
+  .layer { border: 1.6px solid #4a4458; border-radius: 8px; padding: 10px 14px 12px; margin: 0 auto; }
+  .layer h3 { margin: 0 0 8px; font-size: 15px; }
+  .layer h3 small { font-weight: normal; color: #4a4458; font-size: 12.5px; }
+  .row { display: flex; gap: 10px; }
+  .box { flex: 1; border: 1.2px solid #4a4458; border-radius: 6px; background: #ffffff; padding: 7px 8px; font-size: 12px; line-height: 1.35; text-align: center; }
+  .box b { display: block; font-size: 12.5px; margin-bottom: 2px; }
+  .client { background: #f7f5fb; }
+  .app { background: #ede4f7; }
+  .rules { background: #e4ecf7; }
+  .view { background: #e9f5ee; }
+  .data { background: #fff4e5; }
+  .arrow { text-align: center; font-size: 12px; color: #4a4458; margin: 4px 0; line-height: 1.2; }
+  .arrow .a { font-size: 20px; line-height: 18px; }
+  .split { display: flex; gap: 14px; }
+  .split > .layer { flex: 1; margin: 0; }
+  .split > .side { flex: 0 0 300px; }
+  .store { display: flex; gap: 12px; justify-content: center; margin-top: 4px; }
+  .cyl { border: 1.6px solid #4a4458; border-radius: 50% / 16px; background: #fbf8ef; padding: 18px 16px 10px; font-size: 12px; text-align: center; min-width: 220px; }
+</style></head>
+<body><div class="wrap">
+  <div class="layer client"><h3>Navegador <small>— HTML e CSS gerados pelo servidor + public/app.js (confirmações e validação da confirmação de senha)</small></h3></div>
+  <div class="arrow"><span class="a">⇅</span><br>requisições HTTP (GET/POST) e páginas HTML prontas</div>
+  <div class="layer app">
+    <h3>Camada de aplicação <small>— server.js (controles comuns a todas as requisições)</small></h3>
+    <div class="row">
+      <div class="box"><b>Sessão</b>lib/session.js: identificador aleatório de 256 bits, expiração por inatividade e absoluta</div>
+      <div class="box"><b>Controle de acesso</b>autenticação obrigatória e papel (cliente / freelancer) declarados em cada rota</div>
+      <div class="box"><b>Proteções</b>lib/security.js: token anti-CSRF, limite de tentativas de login, cabeçalhos de segurança</div>
+      <div class="box"><b>Tarefas por tempo</b>conclusão automática de pedidos e publicação de avaliações com prazo encerrado</div>
+    </div>
+  </div>
+  <div class="arrow"><span class="a">↓</span></div>
+  <div class="split">
+    <div class="layer rules">
+      <h3>Regras de negócio <small>— routes/</small></h3>
+      <div class="row">
+        <div class="box"><b>auth · account</b>cadastro, login, recuperação de senha, LGPD</div>
+        <div class="box"><b>services · public</b>serviços, busca, perfis públicos</div>
+        <div class="box"><b>orders</b>pedidos, entregas, avaliações</div>
+        <div class="box"><b>projects</b>projetos e propostas</div>
+        <div class="box"><b>messages · profile</b>conversas, perfil, portfólio</div>
+      </div>
+    </div>
+    <div class="layer view side">
+      <h3>Apresentação <small>— views/</small></h3>
+      <div class="box">layout, páginas e componentes; todo dado exibido passa por escape de HTML (e)</div>
+    </div>
+  </div>
+  <div class="arrow"><span class="a">↓</span></div>
+  <div class="split">
+    <div class="layer data">
+      <h3>Acesso a dados</h3>
+      <div class="row">
+        <div class="box"><b>lib/repo.js</b>todas as consultas SQL, sempre preparadas (parâmetros separados do comando)</div>
+        <div class="box"><b>lib/db.js</b>esquema das 12 tabelas e migrações de bancos antigos</div>
+      </div>
+    </div>
+    <div class="layer side" style="background:#f7f5fb">
+      <h3>Módulos de apoio</h3>
+      <div class="box">lib/auth.js (scrypt e política de senha) · lib/mailer.js (e-mail simulado) · lib/http-helpers.js · lib/config.js</div>
+    </div>
+  </div>
+  <div class="arrow"><span class="a">↓</span></div>
+  <div class="store">
+    <div class="cyl"><b>SQLite</b><br>data/database.sqlite</div>
+    <div class="cyl"><b>Arquivos</b><br>public/uploads · data/outbox</div>
+  </div>
+</div></body></html>

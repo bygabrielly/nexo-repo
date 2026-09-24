@@ -1,0 +1,25 @@
+sequenceDiagram
+  autonumber
+  actor F as Freelancer
+  participant N as Navegador
+  participant S as server.js
+  participant R as routes/services.js
+  participant D as lib/repo.js
+  participant B as SQLite
+  F->>N: preenche e envia o formulário
+  N->>S: POST /servicos/novo<br/>(campos + _csrf, cookie de sessão)
+  S->>S: sessão válida? papel "freelancer"?<br/>(senão login ou 403)
+  S->>S: csrfValid(sessão, _csrf)<br/>(senão 403)
+  S->>R: create(ctx)
+  R->>R: validateService()
+  alt dados inválidos
+    R-->>N: 400 — formulário com os erros no topo
+  else dados válidos
+    R->>D: createService(userId, dados)
+    D->>B: INSERT INTO services<br/>VALUES (?, ?, ...)
+    B-->>D: id do serviço
+    D-->>R: id
+    R-->>N: 302 Location: /servicos/{id}<br/>+ aviso "Serviço publicado"
+    N->>S: GET /servicos/{id} (automático)
+    S-->>N: 200 — página do serviço
+  end

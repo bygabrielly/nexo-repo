@@ -1,0 +1,21 @@
+sequenceDiagram
+  autonumber
+  actor C as Cliente
+  participant N as Navegador
+  participant R as routes/projects.js
+  participant D as lib/repo.js
+  participant B as SQLite
+  C->>N: "Aceitar Proposta" e confirma
+  N->>R: POST /propostas/{id}/aceitar<br/>(via server.js: sessão, papel e CSRF)
+  R->>D: proposals.byId(id)
+  D-->>R: proposta, autor e situação do projeto
+  R->>R: é o autor do projeto? (senão 403)<br/>proposta "enviada" e projeto "aberto"?
+  R->>D: acceptProposal(proposta, clienteId)
+  D->>B: BEGIN
+  D->>B: proposta → "aceita"<br/>(somente se ainda "enviada")
+  D->>B: projeto → "em andamento"<br/>(somente se ainda "aberto")
+  D->>B: demais propostas → "recusada"
+  D->>B: INSERT pedido "em andamento"<br/>e evento no histórico
+  D->>B: COMMIT (ROLLBACK se algo mudou)
+  D-->>R: id do pedido
+  R-->>N: 302 Location: /pedidos/{id}<br/>+ aviso "Proposta aceita"

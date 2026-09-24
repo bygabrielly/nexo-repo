@@ -1,0 +1,21 @@
+sequenceDiagram
+  autonumber
+  actor A as Cliente ou freelancer
+  participant N as Navegador
+  participant R as routes/orders.js
+  participant D as lib/repo.js
+  participant B as SQLite
+  A->>N: nota de 1 a 5 e comentário
+  N->>R: POST /pedidos/{id}/avaliar (cliente)<br/>ou /avaliar-cliente (freelancer)
+  R->>R: parte do pedido, papel certo? (senão 403)<br/>concluído, 1ª avaliação, até 14 dias? (senão 409)
+  R->>D: grava a avaliação (published_at vazio)
+  D->>B: INSERT INTO reviews ou client_reviews
+  R->>D: publishOrderReviewsIfBoth(pedido)
+  D->>B: as duas avaliações existem?
+  alt a outra parte já avaliou
+    D->>B: UPDATE ... SET published_at = agora<br/>(as duas ao mesmo tempo)
+    R-->>N: 302 + "avaliações publicadas"
+  else a outra parte ainda não avaliou
+    R-->>N: 302 + "será publicada quando a outra<br/>parte avaliar ou o prazo terminar"
+  end
+  Note over D,B: server.js, no máximo 1 vez por minuto:<br/>publishExpiredReviews() publica as pendentes<br/>de pedidos concluídos há mais de 14 dias
