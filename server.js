@@ -37,12 +37,7 @@ const STATIC_TYPES = {
   '.webp': 'image/webp',
 };
 
-function cookie(name, value, { maxAge } = {}) {
-  let c = `${name}=${value}; HttpOnly; Path=/; SameSite=Lax`;
-  if (config.COOKIE_SECURE) c += '; Secure';
-  if (maxAge !== undefined) c += `; Max-Age=${maxAge}`;
-  return c;
-}
+const cookie = security.buildCookie;
 
 function serveStatic(res, pathname) {
   const base = pathname.startsWith('/uploads/') ? config.UPLOADS_DIR : config.PUBLIC_DIR;

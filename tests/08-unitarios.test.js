@@ -64,3 +64,36 @@ test('T57 — Token anti-CSRF é vinculado à sessão', () => {
   assert.ok(!csrfValid('sessao-a', 'x'.repeat(64)));
   assert.ok(!csrfValid('sessao-a', undefined));
 });
+
+// Controles de sessão que não são observáveis numa única
+// requisição: expiração da sessão e atributo Secure do cookie.
+test('T67 — Sessão expira após 2 h sem uso e 12 h após o login, mesmo se usada continuamente', () => {
+  const session = require('../lib/session');
+  const config = require('../lib/config');
+  const t1 = session.createSession(1);
+  assert.ok(session.getSession(t1), 'sessão recém-criada é válida');
+  session.getSession(t1).lastSeen = Date.now() - config.SESSION_IDLE_MS - 1000;
+  assert.equal(session.getSession(t1), null, 'expirada por inatividade');
+  const t2 = session.createSession(1);
+  const s2 = session.getSession(t2);
+  s2.createdAt = Date.now() - config.SESSION_ABSOLUTE_MS - 1000;
+  s2.lastSeen = Date.now();
+  assert.equal(session.getSession(t2), null, 'expirada pelo tempo máximo, mesmo com uso recente');
+});
+
+test('T68 — Cookie de sessão recebe o atributo Secure quando o sistema é servido por HTTPS', () => {
+  const config = require('../lib/config');
+  const { buildCookie } = require('../lib/security');
+  const original = config.COOKIE_SECURE;
+  try {
+    config.COOKIE_SECURE = false;
+    assert.doesNotMatch(buildCookie('sid', 'abc'), /Secure/);
+    config.COOKIE_SECURE = true;
+    const c = buildCookie('sid', 'abc');
+    assert.match(c, /; HttpOnly/);
+    assert.match(c, /; SameSite=Lax/);
+    assert.match(c, /; Secure/);
+  } finally {
+    config.COOKIE_SECURE = original;
+  }
+});

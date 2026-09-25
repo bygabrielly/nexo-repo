@@ -91,3 +91,18 @@ test('T30 — Ordenação por menor preço e por avaliação', async () => {
   const t2 = [...aval.body.matchAll(/<h3><a href="\/servicos\/\d+">([^<]+)<\/a><\/h3>/g)].map((m) => m[1]);
   assert.ok(['Criação de identidade visual completa', 'Redação de artigos para blog (SEO)', 'Correção de bugs e manutenção de sistemas web'].includes(t2[0]));
 });
+
+test('T70 — Paginação da busca: 12 serviços por página, com link para a página seguinte', async () => {
+  const repo = require('../lib/repo');
+  for (let i = 1; i <= 13; i += 1) {
+    repo.createService(2, { title: `Serviço de teste de paginação ${i}`, description: 'Descrição usada apenas no teste de paginação.',
+      category: 'Programação', price: 100 + i, deliveryDays: 5, keywords: 'paginacao' });
+  }
+  const v = new Browser(app.base);
+  const p1 = await v.get('/servicos?q=paginacao');
+  assert.match(p1.body, /13 serviços encontrados/);
+  assert.equal((p1.body.match(/Serviço de teste de paginação \d+/g) || []).length, 12);
+  assert.match(p1.body, /pagina=2/);
+  const p2 = await v.get('/servicos?q=paginacao&pagina=2');
+  assert.equal((p2.body.match(/Serviço de teste de paginação \d+/g) || []).length, 1);
+});

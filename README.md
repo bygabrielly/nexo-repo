@@ -50,7 +50,8 @@ pasta `data/` antes de iniciar.
 - Busca por palavra-chave e categoria, com filtros de preço, prazo e nota
   mínima, ordenação e paginação.
 - **Pedidos de contratação** com etapas: solicitado → em andamento → entregue →
-  (ajustes) → concluído, além de recusado e cancelado; histórico de eventos e
+  concluído (se o cliente pedir ajustes, o pedido volta a "em andamento"), além
+  de recusado e cancelado; histórico de eventos e
   conversa própria do pedido. Se o cliente não responder a uma entrega em
   3 dias, o pedido é concluído automaticamente. Pedidos com prazo vencido e
   entregas fora do prazo são sinalizados.
@@ -110,9 +111,11 @@ recuperação de senha são gravadas em `data/outbox/` e exibidas no console.
 npm test          # ou: node --test --test-concurrency=1 tests/*.test.js
 ```
 
-São 66 testes (T01 a T66) que sobem o servidor com banco temporário e
-verificam, por meio de requisições HTTP reais, os requisitos funcionais, os
-controles de segurança, os recursos de LGPD e a acessibilidade de 38 páginas.
+São 71 testes (T01 a T71). A maioria sobe o servidor com banco temporário e
+verifica, por meio de requisições HTTP reais, os requisitos funcionais, os
+controles de segurança, os recursos de LGPD e a acessibilidade de 38 páginas;
+os demais testam diretamente funções de segurança, a expiração das sessões, o
+contraste das cores e a migração de bancos da primeira versão.
 
 ## Estrutura
 

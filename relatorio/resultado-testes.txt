@@ -1,424 +1,456 @@
 TAP version 13
-# (node:473) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (node:659) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 # (Use `node --trace-warnings ...` to show where the warning was created)
 # Subtest: T01 — Cadastro com dados válidos cria a conta e inicia a sessão
 ok 1 - T01 — Cadastro com dados válidos cria a conta e inicia a sessão
   ---
-  duration_ms: 170.152379
+  duration_ms: 128.130821
   type: 'test'
   ...
 # Subtest: T02 — Cadastro com e-mail já utilizado é recusado
 ok 2 - T02 — Cadastro com e-mail já utilizado é recusado
   ---
-  duration_ms: 17.954885
+  duration_ms: 10.107372
   type: 'test'
   ...
 # Subtest: T03 — Política de senha e confirmação da senha são exigidas no cadastro
 ok 3 - T03 — Política de senha e confirmação da senha são exigidas no cadastro
   ---
-  duration_ms: 21.027314
+  duration_ms: 14.502064
   type: 'test'
   ...
 # Subtest: T04 — Cadastro exige aceite da política de privacidade (LGPD) e registra o consentimento
 ok 4 - T04 — Cadastro exige aceite da política de privacidade (LGPD) e registra o consentimento
   ---
-  duration_ms: 72.49835
+  duration_ms: 54.420679
   type: 'test'
   ...
 # Subtest: T05 — Login com credenciais corretas autentica o usuário
 ok 5 - T05 — Login com credenciais corretas autentica o usuário
   ---
-  duration_ms: 83.983109
+  duration_ms: 52.267218
   type: 'test'
   ...
 # Subtest: T06 — Login com senha incorreta é recusado com mensagem genérica
 ok 6 - T06 — Login com senha incorreta é recusado com mensagem genérica
   ---
-  duration_ms: 70.543906
+  duration_ms: 43.195717
   type: 'test'
   ...
 # Subtest: T07 — Rota protegida redireciona ao login e, após autenticar, retorna à página pedida
 ok 7 - T07 — Rota protegida redireciona ao login e, após autenticar, retorna à página pedida
   ---
-  duration_ms: 70.998336
+  duration_ms: 45.623399
   type: 'test'
   ...
 # Subtest: T08 — Redirecionamento após login não aceita endereços externos (open redirect)
 ok 8 - T08 — Redirecionamento após login não aceita endereços externos (open redirect)
   ---
-  duration_ms: 64.130332
+  duration_ms: 42.337227
   type: 'test'
   ...
 # Subtest: T09 — Logout invalida a sessão no servidor
 ok 9 - T09 — Logout invalida a sessão no servidor
   ---
-  duration_ms: 65.657975
+  duration_ms: 51.52369
   type: 'test'
   ...
 # Subtest: T10 — Um novo identificador de sessão é gerado a cada login (proteção contra fixação de sessão)
 ok 10 - T10 — Um novo identificador de sessão é gerado a cada login (proteção contra fixação de sessão)
   ---
-  duration_ms: 111.114769
+  duration_ms: 104.336433
   type: 'test'
   ...
 # Subtest: T11 — Cookie de sessão emitido com HttpOnly e SameSite=Lax
 ok 11 - T11 — Cookie de sessão emitido com HttpOnly e SameSite=Lax
   ---
-  duration_ms: 52.649754
+  duration_ms: 42.701524
   type: 'test'
   ...
 # Subtest: T12 — Recuperação de senha: link de uso único, que redefine a senha e encerra as sessões antigas
 ok 12 - T12 — Recuperação de senha: link de uso único, que redefine a senha e encerra as sessões antigas
   ---
-  duration_ms: 177.218431
+  duration_ms: 138.459388
   type: 'test'
   ...
-# (node:481) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (node:667) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 # (Use `node --trace-warnings ...` to show where the warning was created)
 # Subtest: T13 — Envio de formulário sem token anti-CSRF é recusado
 ok 13 - T13 — Envio de formulário sem token anti-CSRF é recusado
   ---
-  duration_ms: 145.787701
+  duration_ms: 107.821305
   type: 'test'
   ...
 # Subtest: T14 — Token anti-CSRF de outra sessão não é aceito
 ok 14 - T14 — Token anti-CSRF de outra sessão não é aceito
   ---
-  duration_ms: 150.700566
+  duration_ms: 120.446525
   type: 'test'
   ...
 # Subtest: T15 — Upload de script disfarçado de imagem (.png com Content-Type image/png) é rejeitado
 ok 15 - T15 — Upload de script disfarçado de imagem (.png com Content-Type image/png) é rejeitado
   ---
-  duration_ms: 64.09997
+  duration_ms: 55.460263
   type: 'test'
   ...
 # Subtest: T16 — Upload de imagem PNG real é aceito, com nome aleatório e extensão definida pelo conteúdo
 ok 16 - T16 — Upload de imagem PNG real é aceito, com nome aleatório e extensão definida pelo conteúdo
   ---
-  duration_ms: 60.782238
+  duration_ms: 82.695609
   type: 'test'
   ...
 # Subtest: T17 — Conteúdo com código HTML/JavaScript é exibido como texto (proteção contra XSS armazenado)
 ok 17 - T17 — Conteúdo com código HTML/JavaScript é exibido como texto (proteção contra XSS armazenado)
   ---
-  duration_ms: 59.672633
+  duration_ms: 51.258681
   type: 'test'
   ...
 # Subtest: T18 — Respostas trazem cabeçalhos de segurança (CSP sem scripts embutidos, nosniff, antienquadramento)
 ok 18 - T18 — Respostas trazem cabeçalhos de segurança (CSP sem scripts embutidos, nosniff, antienquadramento)
   ---
-  duration_ms: 7.180381
+  duration_ms: 4.658552
   type: 'test'
   ...
 # Subtest: T19 — E-mail do freelancer não é exibido no perfil público
 ok 19 - T19 — E-mail do freelancer não é exibido no perfil público
   ---
-  duration_ms: 59.822408
+  duration_ms: 55.404253
   type: 'test'
   ...
 # Subtest: T20 — Mensagens são privadas: um cliente não vê a conversa de outro cliente com o mesmo freelancer
 ok 20 - T20 — Mensagens são privadas: um cliente não vê a conversa de outro cliente com o mesmo freelancer
   ---
-  duration_ms: 125.410458
+  duration_ms: 97.409057
   type: 'test'
   ...
 # Subtest: T21 — Pedido só pode ser acessado pelo cliente e pelo freelancer envolvidos
 ok 21 - T21 — Pedido só pode ser acessado pelo cliente e pelo freelancer envolvidos
   ---
-  duration_ms: 104.165318
+  duration_ms: 91.03461
   type: 'test'
   ...
 # Subtest: T22 — Arquivos fora das pastas públicas não podem ser obtidos (path traversal)
 ok 22 - T22 — Arquivos fora das pastas públicas não podem ser obtidos (path traversal)
   ---
-  duration_ms: 5.091078
+  duration_ms: 3.211225
   type: 'test'
   ...
 # Subtest: T23 — Controle de acesso por papel: cliente não publica serviço; freelancer não publica projeto
 ok 23 - T23 — Controle de acesso por papel: cliente não publica serviço; freelancer não publica projeto
   ---
-  duration_ms: 101.702965
+  duration_ms: 89.169492
   type: 'test'
   ...
-# (node:493) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (node:679) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 # (Use `node --trace-warnings ...` to show where the warning was created)
 # Subtest: T24 — Freelancer publica serviço e é redirecionado para a página dele (Post/Redirect/Get)
 ok 24 - T24 — Freelancer publica serviço e é redirecionado para a página dele (Post/Redirect/Get)
   ---
-  duration_ms: 161.633522
+  duration_ms: 129.984402
   type: 'test'
   ...
 # Subtest: T25 — Validação do formulário de serviço (título, categoria, descrição, prazo)
 ok 25 - T25 — Validação do formulário de serviço (título, categoria, descrição, prazo)
   ---
-  duration_ms: 73.288856
+  duration_ms: 54.666049
   type: 'test'
   ...
 # Subtest: T26 — Freelancer não consegue editar nem excluir serviço de outro freelancer
 ok 26 - T26 — Freelancer não consegue editar nem excluir serviço de outro freelancer
   ---
-  duration_ms: 97.988468
+  duration_ms: 61.505488
   type: 'test'
   ...
 # Subtest: T27 — Exclusão de serviço pode ser desfeita
 ok 27 - T27 — Exclusão de serviço pode ser desfeita
   ---
-  duration_ms: 67.517491
+  duration_ms: 58.708004
   type: 'test'
   ...
 # Subtest: T28 — Busca encontra o serviço por termo presente apenas nas palavras-chave
 ok 28 - T28 — Busca encontra o serviço por termo presente apenas nas palavras-chave
   ---
-  duration_ms: 4.044515
+  duration_ms: 2.925148
   type: 'test'
   ...
 # Subtest: T29 — Filtros combinados de categoria, preço, prazo e avaliação
 ok 29 - T29 — Filtros combinados de categoria, preço, prazo e avaliação
   ---
-  duration_ms: 15.088882
+  duration_ms: 9.654503
   type: 'test'
   ...
 # Subtest: T30 — Ordenação por menor preço e por avaliação
 ok 30 - T30 — Ordenação por menor preço e por avaliação
   ---
-  duration_ms: 12.474566
+  duration_ms: 9.011409
   type: 'test'
   ...
-# (node:501) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: T70 — Paginação da busca: 12 serviços por página, com link para a página seguinte
+ok 31 - T70 — Paginação da busca: 12 serviços por página, com link para a página seguinte
+  ---
+  duration_ms: 10.48206
+  type: 'test'
+  ...
+# (node:687) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 # (Use `node --trace-warnings ...` to show where the warning was created)
 # Subtest: T31 — Cliente contrata um serviço: o pedido é criado como "solicitado" e o freelancer é notificado
-ok 31 - T31 — Cliente contrata um serviço: o pedido é criado como "solicitado" e o freelancer é notificado
+ok 32 - T31 — Cliente contrata um serviço: o pedido é criado como "solicitado" e o freelancer é notificado
   ---
-  duration_ms: 185.711565
+  duration_ms: 150.974122
   type: 'test'
   ...
 # Subtest: T32 — Ações fora de ordem ou do papel errado são bloqueadas
-ok 32 - T32 — Ações fora de ordem ou do papel errado são bloqueadas
+ok 33 - T32 — Ações fora de ordem ou do papel errado são bloqueadas
   ---
-  duration_ms: 24.874536
+  duration_ms: 15.543125
   type: 'test'
   ...
 # Subtest: T33 — Fluxo completo: aceitar, entregar, pedir ajuste, entregar de novo e aprovar
-ok 33 - T33 — Fluxo completo: aceitar, entregar, pedir ajuste, entregar de novo e aprovar
+ok 34 - T33 — Fluxo completo: aceitar, entregar, pedir ajuste, entregar de novo e aprovar
   ---
-  duration_ms: 59.550367
+  duration_ms: 41.386157
   type: 'test'
   ...
 # Subtest: T34 — Transição inválida é recusada (aprovar um pedido já concluído)
-ok 34 - T34 — Transição inválida é recusada (aprovar um pedido já concluído)
+ok 35 - T34 — Transição inválida é recusada (aprovar um pedido já concluído)
   ---
-  duration_ms: 15.542059
+  duration_ms: 8.730922
   type: 'test'
   ...
 # Subtest: T35 — Avaliação do freelancer: só pelo cliente, só após a conclusão, uma vez; o freelancer responde publicamente
-ok 35 - T35 — Avaliação do freelancer: só pelo cliente, só após a conclusão, uma vez; o freelancer responde publicamente
+ok 36 - T35 — Avaliação do freelancer: só pelo cliente, só após a conclusão, uma vez; o freelancer responde publicamente
   ---
-  duration_ms: 65.370604
+  duration_ms: 40.55892
   type: 'test'
   ...
 # Subtest: T36 — Reputação: média de avaliações e pedidos concluídos aparecem no perfil e nos cartões
-ok 36 - T36 — Reputação: média de avaliações e pedidos concluídos aparecem no perfil e nos cartões
+ok 37 - T36 — Reputação: média de avaliações e pedidos concluídos aparecem no perfil e nos cartões
   ---
-  duration_ms: 13.935449
+  duration_ms: 9.035019
   type: 'test'
   ...
 # Subtest: T37 — Serviço "a combinar": o freelancer precisa informar o valor para aceitar
-ok 37 - T37 — Serviço "a combinar": o freelancer precisa informar o valor para aceitar
+ok 38 - T37 — Serviço "a combinar": o freelancer precisa informar o valor para aceitar
   ---
-  duration_ms: 135.438667
+  duration_ms: 105.0112
   type: 'test'
   ...
 # Subtest: T38 — Cancelamento exige motivo e fica registrado no histórico
-ok 38 - T38 — Cancelamento exige motivo e fica registrado no histórico
+ok 39 - T38 — Cancelamento exige motivo e fica registrado no histórico
   ---
-  duration_ms: 20.420942
+  duration_ms: 16.842958
   type: 'test'
   ...
 # Subtest: T39 — Conversa do pedido é compartilhada apenas entre as duas partes
-ok 39 - T39 — Conversa do pedido é compartilhada apenas entre as duas partes
+ok 40 - T39 — Conversa do pedido é compartilhada apenas entre as duas partes
   ---
-  duration_ms: 64.799619
+  duration_ms: 55.186053
   type: 'test'
   ...
 # Subtest: T65 — Pedido com prazo vencido é sinalizado, e a entrega fora do prazo fica registrada
-ok 40 - T65 — Pedido com prazo vencido é sinalizado, e a entrega fora do prazo fica registrada
+ok 41 - T65 — Pedido com prazo vencido é sinalizado, e a entrega fora do prazo fica registrada
   ---
-  duration_ms: 30.35712
+  duration_ms: 17.274843
   type: 'test'
   ...
-# (node:509) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (node:695) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 # (Use `node --trace-warnings ...` to show where the warning was created)
 # Subtest: T40 — Cliente publica projeto com orçamento e prazo
-ok 41 - T40 — Cliente publica projeto com orçamento e prazo
+ok 42 - T40 — Cliente publica projeto com orçamento e prazo
   ---
-  duration_ms: 135.805491
+  duration_ms: 103.721337
   type: 'test'
   ...
 # Subtest: T41 — Validação do projeto (orçamento mínimo maior que o máximo)
-ok 42 - T41 — Validação do projeto (orçamento mínimo maior que o máximo)
+ok 43 - T41 — Validação do projeto (orçamento mínimo maior que o máximo)
   ---
-  duration_ms: 7.056785
+  duration_ms: 5.182504
   type: 'test'
   ...
 # Subtest: T42 — Freelancers enviam propostas; proposta duplicada é recusada
-ok 43 - T42 — Freelancers enviam propostas; proposta duplicada é recusada
+ok 44 - T42 — Freelancers enviam propostas; proposta duplicada é recusada
   ---
-  duration_ms: 198.452454
+  duration_ms: 184.926698
   type: 'test'
   ...
 # Subtest: T43 — Somente o autor do projeto pode aceitar uma proposta
-ok 44 - T43 — Somente o autor do projeto pode aceitar uma proposta
+ok 45 - T43 — Somente o autor do projeto pode aceitar uma proposta
   ---
-  duration_ms: 129.434378
+  duration_ms: 125.2999
   type: 'test'
   ...
 # Subtest: T44 — Aceitar proposta cria o pedido, recusa as demais e fecha o projeto para novas propostas
-ok 45 - T44 — Aceitar proposta cria o pedido, recusa as demais e fecha o projeto para novas propostas
+ok 46 - T44 — Aceitar proposta cria o pedido, recusa as demais e fecha o projeto para novas propostas
   ---
-  duration_ms: 91.372666
+  duration_ms: 65.804446
   type: 'test'
   ...
 # Subtest: T45 — Freelancer retira proposta enviada
-ok 46 - T45 — Freelancer retira proposta enviada
+ok 47 - T45 — Freelancer retira proposta enviada
   ---
-  duration_ms: 81.568373
+  duration_ms: 62.975215
   type: 'test'
   ...
 # Subtest: T64 — Freelancer que retirou a proposta pode enviar uma nova, com os dados anteriores pré-preenchidos
-ok 47 - T64 — Freelancer que retirou a proposta pode enviar uma nova, com os dados anteriores pré-preenchidos
+ok 48 - T64 — Freelancer que retirou a proposta pode enviar uma nova, com os dados anteriores pré-preenchidos
   ---
-  duration_ms: 80.252967
+  duration_ms: 67.970584
   type: 'test'
   ...
 # Subtest: T66 — Projetos abertos filtrados por orçamento e ordenados por maior orçamento ou menos propostas
-ok 48 - T66 — Projetos abertos filtrados por orçamento e ordenados por maior orçamento ou menos propostas
+ok 49 - T66 — Projetos abertos filtrados por orçamento e ordenados por maior orçamento ou menos propostas
   ---
-  duration_ms: 13.22846
+  duration_ms: 11.535816
   type: 'test'
   ...
-# (node:517) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (node:703) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 # (Use `node --trace-warnings ...` to show where the warning was created)
 # Subtest: T46 — Exportação dos dados do titular em JSON (LGPD, art. 18), sem dados de terceiros
-ok 49 - T46 — Exportação dos dados do titular em JSON (LGPD, art. 18), sem dados de terceiros
+ok 50 - T46 — Exportação dos dados do titular em JSON (LGPD, art. 18), sem dados de terceiros
   ---
-  duration_ms: 148.17057
+  duration_ms: 110.657535
   type: 'test'
   ...
 # Subtest: T47 — Alterar a senha exige a senha atual e encerra as outras sessões
-ok 50 - T47 — Alterar a senha exige a senha atual e encerra as outras sessões
+ok 51 - T47 — Alterar a senha exige a senha atual e encerra as outras sessões
   ---
-  duration_ms: 298.885382
+  duration_ms: 272.87207
   type: 'test'
   ...
 # Subtest: T48 — Exclusão da conta anonimiza os dados, preserva o histórico da outra parte e impede novo login
-ok 51 - T48 — Exclusão da conta anonimiza os dados, preserva o histórico da outra parte e impede novo login
+ok 52 - T48 — Exclusão da conta anonimiza os dados, preserva o histórico da outra parte e impede novo login
   ---
-  duration_ms: 274.961094
+  duration_ms: 242.310431
   type: 'test'
   ...
 # Subtest: T49 — Páginas de política de privacidade e de ajuda estão acessíveis a visitantes
-ok 52 - T49 — Páginas de política de privacidade e de ajuda estão acessíveis a visitantes
+ok 53 - T49 — Páginas de política de privacidade e de ajuda estão acessíveis a visitantes
   ---
-  duration_ms: 5.958536
+  duration_ms: 3.203881
   type: 'test'
   ...
-# (node:525) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (node:711) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 # (Use `node --trace-warnings ...` to show where the warning was created)
 # Subtest: T50 — Após 5 tentativas de login com senha errada, novas tentativas são bloqueadas (inclusive com a senha certa)
-ok 53 - T50 — Após 5 tentativas de login com senha errada, novas tentativas são bloqueadas (inclusive com a senha certa)
+ok 54 - T50 — Após 5 tentativas de login com senha errada, novas tentativas são bloqueadas (inclusive com a senha certa)
   ---
-  duration_ms: 386.607253
+  duration_ms: 318.190164
   type: 'test'
   ...
 # Subtest: T51 — hashPassword/verifyPassword: salt aleatório e verificação correta
-ok 54 - T51 — hashPassword/verifyPassword: salt aleatório e verificação correta
+ok 55 - T51 — hashPassword/verifyPassword: salt aleatório e verificação correta
   ---
-  duration_ms: 272.337413
+  duration_ms: 182.896582
   type: 'test'
   ...
 # Subtest: T52 — Política de senha
-ok 55 - T52 — Política de senha
+ok 56 - T52 — Política de senha
   ---
-  duration_ms: 1.861461
+  duration_ms: 1.577633
   type: 'test'
   ...
 # Subtest: T53 — detectImageType reconhece PNG, JPEG e WEBP pela assinatura e rejeita o resto
-ok 56 - T53 — detectImageType reconhece PNG, JPEG e WEBP pela assinatura e rejeita o resto
+ok 57 - T53 — detectImageType reconhece PNG, JPEG e WEBP pela assinatura e rejeita o resto
   ---
-  duration_ms: 0.529656
+  duration_ms: 0.408813
   type: 'test'
   ...
 # Subtest: T54 — AttemptLimiter bloqueia após o limite e libera após o tempo de bloqueio
-ok 57 - T54 — AttemptLimiter bloqueia após o limite e libera após o tempo de bloqueio
+ok 58 - T54 — AttemptLimiter bloqueia após o limite e libera após o tempo de bloqueio
   ---
-  duration_ms: 0.295521
+  duration_ms: 0.270347
   type: 'test'
   ...
 # Subtest: T55 — safeNext aceita só caminhos internos
-ok 58 - T55 — safeNext aceita só caminhos internos
+ok 59 - T55 — safeNext aceita só caminhos internos
   ---
-  duration_ms: 0.346017
+  duration_ms: 0.289629
   type: 'test'
   ...
 # Subtest: T56 — escapeHtml neutraliza os caracteres especiais de HTML
-ok 59 - T56 — escapeHtml neutraliza os caracteres especiais de HTML
+ok 60 - T56 — escapeHtml neutraliza os caracteres especiais de HTML
   ---
-  duration_ms: 0.259613
+  duration_ms: 0.156208
   type: 'test'
   ...
 # Subtest: T57 — Token anti-CSRF é vinculado à sessão
-ok 60 - T57 — Token anti-CSRF é vinculado à sessão
+ok 61 - T57 — Token anti-CSRF é vinculado à sessão
   ---
-  duration_ms: 0.633383
+  duration_ms: 0.590184
   type: 'test'
   ...
-# (node:540) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# Subtest: T67 — Sessão expira após 2 h sem uso e 12 h após o login, mesmo se usada continuamente
+ok 62 - T67 — Sessão expira após 2 h sem uso e 12 h após o login, mesmo se usada continuamente
+  ---
+  duration_ms: 0.923838
+  type: 'test'
+  ...
+# Subtest: T68 — Cookie de sessão recebe o atributo Secure quando o sistema é servido por HTTPS
+ok 63 - T68 — Cookie de sessão recebe o atributo Secure quando o sistema é servido por HTTPS
+  ---
+  duration_ms: 0.511194
+  type: 'test'
+  ...
+# (node:726) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 # (Use `node --trace-warnings ...` to show where the warning was created)
 # Subtest: T58 — Acessibilidade estrutural (WCAG 1.1.1, 1.3.1, 2.4.1, 3.1.1, 4.1.2) em 38 páginas, para os três perfis de acesso
-ok 61 - T58 — Acessibilidade estrutural (WCAG 1.1.1, 1.3.1, 2.4.1, 3.1.1, 4.1.2) em 38 páginas, para os três perfis de acesso
+ok 64 - T58 — Acessibilidade estrutural (WCAG 1.1.1, 1.3.1, 2.4.1, 3.1.1, 4.1.2) em 38 páginas, para os três perfis de acesso
   ---
-  duration_ms: 435.946018
+  duration_ms: 365.436272
   type: 'test'
   ...
 # Subtest: T59 — Contraste mínimo de 4,5:1 (WCAG 1.4.3, nível AA) em todos os pares de cor de texto da interface
-ok 62 - T59 — Contraste mínimo de 4,5:1 (WCAG 1.4.3, nível AA) em todos os pares de cor de texto da interface
+ok 65 - T59 — Contraste mínimo de 4,5:1 (WCAG 1.4.3, nível AA) em todos os pares de cor de texto da interface
   ---
-  duration_ms: 1.544356
+  duration_ms: 1.241544
   type: 'test'
   ...
-# (node:548) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (node:734) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 # (Use `node --trace-warnings ...` to show where the warning was created)
 # Subtest: T60 — Avaliação mútua às cegas: nenhuma nota é exibida até que as duas partes avaliem
-ok 63 - T60 — Avaliação mútua às cegas: nenhuma nota é exibida até que as duas partes avaliem
+ok 66 - T60 — Avaliação mútua às cegas: nenhuma nota é exibida até que as duas partes avaliem
   ---
-  duration_ms: 269.526679
+  duration_ms: 209.173503
   type: 'test'
   ...
 # Subtest: T61 — Prazo de 14 dias: avaliações pendentes são publicadas ao fim do prazo e novas avaliações são recusadas
-ok 64 - T61 — Prazo de 14 dias: avaliações pendentes são publicadas ao fim do prazo e novas avaliações são recusadas
+ok 67 - T61 — Prazo de 14 dias: avaliações pendentes são publicadas ao fim do prazo e novas avaliações são recusadas
   ---
-  duration_ms: 81.401905
+  duration_ms: 41.811084
   type: 'test'
   ...
 # Subtest: T62 — Conclusão automática: entrega sem resposta do cliente por 3 dias conclui o pedido
-ok 65 - T62 — Conclusão automática: entrega sem resposta do cliente por 3 dias conclui o pedido
+ok 68 - T62 — Conclusão automática: entrega sem resposta do cliente por 3 dias conclui o pedido
   ---
-  duration_ms: 32.272815
+  duration_ms: 20.209501
   type: 'test'
   ...
 # Subtest: T63 — Reputação do cliente: nota, pedidos concluídos e comentários visíveis no projeto e no pedido
-ok 66 - T63 — Reputação do cliente: nota, pedidos concluídos e comentários visíveis no projeto e no pedido
+ok 69 - T63 — Reputação do cliente: nota, pedidos concluídos e comentários visíveis no projeto e no pedido
   ---
-  duration_ms: 61.959436
+  duration_ms: 49.081818
   type: 'test'
   ...
-1..66
-# tests 66
+# (node:742) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: T69 — Mensagens não lidas: contador no menu, marcação como lida ao abrir e novo aviso a cada mensagem
+ok 70 - T69 — Mensagens não lidas: contador no menu, marcação como lida ao abrir e novo aviso a cada mensagem
+  ---
+  duration_ms: 205.180247
+  type: 'test'
+  ...
+# Subtest: T71 — Migração: mensagens de um banco da primeira versão viram conversas privadas por cliente
+ok 71 - T71 — Migração: mensagens de um banco da primeira versão viram conversas privadas por cliente
+  ---
+  duration_ms: 67.975066
+  type: 'test'
+  ...
+1..71
+# tests 71
 # suites 0
-# pass 66
+# pass 71
 # fail 0
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 8278.537288
+# duration_ms 7095.118398
