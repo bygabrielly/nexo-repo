@@ -28,6 +28,7 @@ const views = require('./views');
 const routes = require('./routes');
 const { seedIfEmpty } = require('./lib/seed');
 
+const IMAGE_TYPES = new Set(['.jpg', '.jpeg', '.png', '.webp']);
 const STATIC_TYPES = {
   '.css': 'text/css; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
@@ -43,7 +44,11 @@ function serveStatic(res, pathname) {
   const base = pathname.startsWith('/uploads/') ? config.UPLOADS_DIR : config.PUBLIC_DIR;
   const rel = pathname.startsWith('/uploads/') ? pathname.slice('/uploads/'.length) : pathname.slice(1);
   const filePath = path.join(base, rel);
-  if (!filePath.startsWith(base + path.sep) || !STATIC_TYPES[path.extname(filePath).toLowerCase()]) {
+  const ext = path.extname(filePath).toLowerCase();
+  // Na pasta de uploads só são entregues imagens: nenhum outro tipo de arquivo
+  // (como .js ou .html) pode ser servido a partir dela, mesmo que exista lá.
+  const allowed = pathname.startsWith('/uploads/') ? IMAGE_TYPES.has(ext) : !!STATIC_TYPES[ext];
+  if (!filePath.startsWith(base + path.sep) || !allowed) {
     res.writeHead(404, security.securityHeaders({ 'Content-Type': 'text/plain; charset=utf-8' }));
     return res.end('Não encontrado');
   }
@@ -192,6 +197,7 @@ function createApp() {
             ctx.body = await parseFormBody(req, config.MAX_FORM_BYTES);
           }
         } catch (err) {
+          res.setHeader('Connection', 'close'); // o restante do corpo, se houver, é descartado
           return ctx.render(413, 'Envio inválido', views.errorPage('Envio inválido', 'O conteúdo enviado é grande demais ou está em um formato inválido.'));
         }
         if (!security.csrfValid(sid || aid, ctx.body._csrf)) {

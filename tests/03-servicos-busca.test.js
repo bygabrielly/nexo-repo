@@ -64,7 +64,7 @@ test('T28 — Busca encontra o serviço por termo presente apenas nas palavras-c
   assert.match(r2.body, /1 serviço encontrado/);
 });
 
-test('T29 — Filtros combinados de categoria, preço, prazo e avaliação', async () => {
+test('T29 — Filtros de categoria, preço, prazo e avaliação, isolados e combinados', async () => {
   const b = new Browser(app.base);
   const prog = await b.get('/servicos?categoria=' + encodeURIComponent('Programação'));
   assert.match(prog.body, /Desenvolvimento de site institucional/);
@@ -78,6 +78,11 @@ test('T29 — Filtros combinados de categoria, preço, prazo e avaliação', asy
   const nota = await b.get('/servicos?nota=4.5');
   assert.match(nota.body, /identidade visual completa/);
   assert.doesNotMatch(nota.body, /Vídeo institucional/, 'serviço sem avaliações não atinge a nota mínima');
+  const combinados = await b.get('/servicos?categoria=' + encodeURIComponent('Programação') + '&preco_max=200&prazo=3&nota=4.5');
+  assert.match(combinados.body, /Correção de bugs/);
+  assert.match(combinados.body, /1 serviço encontrado/, 'os quatro filtros aplicados juntos');
+  const semResultado = await b.get('/servicos?categoria=' + encodeURIComponent('Design Gráfico') + '&preco_max=200');
+  assert.match(semResultado.body, /Nenhum serviço encontrado|0 serviços encontrados/);
   const invalido = await b.get('/servicos?preco_min=500&preco_max=100');
   assert.match(invalido.body, /preço mínimo não pode ser maior/);
 });
@@ -105,4 +110,23 @@ test('T70 — Paginação da busca: 12 serviços por página, com link para a p�
   assert.match(p1.body, /pagina=2/);
   const p2 = await v.get('/servicos?q=paginacao&pagina=2');
   assert.equal((p2.body.match(/Serviço de teste de paginação \d+/g) || []).length, 1);
+});
+
+test('T72 — Item do portfólio: o dono exclui e restaura; outro freelancer não consegue excluí-lo', async () => {
+  const { PNG_1PX } = require('./helpers');
+  const marina = new Browser(app.base);
+  await marina.login('marina@example.com');
+  assert.equal((await marina.post('/perfil/portfolio', { title: 'Cartaz da feira de artesanato' },
+    { from: '/perfil/portfolio', files: { image: { buffer: PNG_1PX, type: 'image/png', name: 'cartaz.png' } } })).status, 302);
+  const gestao = await marina.get('/perfil/portfolio');
+  const itemId = gestao.body.match(/action="\/perfil\/portfolio\/(\d+)\/excluir"[\s\S]*?Cartaz da feira|Cartaz da feira[\s\S]*?action="\/perfil\/portfolio\/(\d+)\/excluir"/);
+  const idItem = itemId[1] || itemId[2];
+  const rafael = new Browser(app.base);
+  await rafael.login('rafael@example.com');
+  assert.equal((await rafael.post(`/perfil/portfolio/${idItem}/excluir`, {}, { from: '/perfil/portfolio' })).status, 403);
+  assert.match((await new Browser(app.base).get('/freelancers/1')).body, /Cartaz da feira de artesanato/);
+  assert.equal((await marina.post(`/perfil/portfolio/${idItem}/excluir`, {}, { from: '/perfil/portfolio' })).status, 302);
+  assert.doesNotMatch((await new Browser(app.base).get('/freelancers/1')).body, /Cartaz da feira de artesanato/);
+  assert.equal((await marina.post(`/perfil/portfolio/${idItem}/restaurar`, {}, { from: '/perfil/portfolio' })).status, 302);
+  assert.match((await new Browser(app.base).get('/freelancers/1')).body, /Cartaz da feira de artesanato/);
 });

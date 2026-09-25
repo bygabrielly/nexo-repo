@@ -133,3 +133,12 @@ test('T23 — Controle de acesso por papel: cliente não publica serviço; freel
   await freela.login('rafael@example.com');
   assert.equal((await freela.get('/projetos/novo')).status, 403);
 });
+
+test('T73 — A pasta de uploads só entrega imagens: outro tipo de arquivo colocado nela não é servido', async () => {
+  const pasta = path.join(app.dir, 'uploads');
+  fs.mkdirSync(pasta, { recursive: true });
+  fs.writeFileSync(path.join(pasta, 'malicioso.js'), 'alert(1)');
+  fs.writeFileSync(path.join(pasta, 'pagina.html'), '<script>alert(1)</script>');
+  assert.equal((await fetch(app.base + '/uploads/malicioso.js')).status, 404);
+  assert.equal((await fetch(app.base + '/uploads/pagina.html')).status, 404);
+});

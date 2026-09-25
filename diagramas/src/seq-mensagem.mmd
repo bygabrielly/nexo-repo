@@ -1,0 +1,23 @@
+sequenceDiagram
+  autonumber
+  actor C as Cliente
+  participant N as Navegador
+  participant R as routes/services.js
+  participant M as routes/messages.js
+  participant D as lib/repo.js
+  participant B as SQLite
+  actor F as Freelancer
+  C->>N: escreve a dúvida na página do serviço e envia
+  N->>R: POST /servicos/{id}/mensagem<br/>(via server.js: sessão, papel "cliente" e CSRF)
+  R->>D: services.byId(id)
+  D-->>R: serviço e seu autor (freelancer)
+  R->>D: findOrCreateConversation(cliente, freelancer do serviço, serviço)
+  D->>B: SELECT conversa do par cliente–freelancer<br/>(INSERT se ainda não existir)
+  R->>D: sendMessage(conversa, cliente, texto)
+  D->>B: INSERT INTO chat_messages<br/>UPDATE conversations (data)
+  R-->>N: 302 Location: /servicos/{id}<br/>+ aviso "Mensagem enviada"
+  Note over R,B: o destinatário vem do banco (autor do serviço),<br/>nunca de um campo enviado pelo navegador
+  F->>M: GET /mensagens/{conversa}<br/>(o menu indica mensagens não lidas)
+  M->>M: é o cliente ou o freelancer da conversa? (senão 403)
+  M->>D: marca as mensagens recebidas como lidas
+  D->>B: UPDATE chat_messages SET read_at = agora

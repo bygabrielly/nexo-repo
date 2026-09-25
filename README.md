@@ -10,11 +10,13 @@ Implementado em **Node.js puro**, sem frameworks nem bibliotecas externas
 ## Requisitos
 
 - Node.js 22.5 ou superior (usa o módulo `node:sqlite`)
+- Versão usada no desenvolvimento e nos testes: Node.js 22.22.2, com SQLite 3.51.2 embutido
 
 ## Como executar
 
 ```bash
-node server.js
+node server.js      # ou: npm start
+npm test            # executa a suíte de testes
 ```
 
 Acesse http://localhost:3000. Na primeira execução o banco SQLite é criado em
@@ -111,7 +113,7 @@ recuperação de senha são gravadas em `data/outbox/` e exibidas no console.
 npm test          # ou: node --test --test-concurrency=1 tests/*.test.js
 ```
 
-São 71 testes (T01 a T71). A maioria sobe o servidor com banco temporário e
+São 77 testes (T01 a T77). A maioria sobe o servidor com banco temporário e
 verifica, por meio de requisições HTTP reais, os requisitos funcionais, os
 controles de segurança, os recursos de LGPD e a acessibilidade de 38 páginas;
 os demais testam diretamente funções de segurança, a expiração das sessões, o
@@ -120,17 +122,34 @@ contraste das cores e a migração de bancos da primeira versão.
 ## Estrutura
 
 ```
-server.js            camada de aplicação: servidor, sessão, controle de acesso, CSRF
-routes/              regras de negócio de cada funcionalidade (rotas)
-views/               camada de apresentação (geração do HTML)
-lib/db.js            esquema do banco e migrações
-lib/repo.js          camada de acesso a dados (consultas preparadas)
-lib/security.js      CSRF, limite de tentativas, tipo real de imagem, cabeçalhos
-lib/auth.js          hash e política de senha
-lib/session.js       sessões
-lib/seed.js          dados de demonstração
-public/              CSS, JavaScript da interface e uploads
-seed-assets/         imagens ilustrativas dos dados de demonstração
-tests/               testes automatizados (node:test)
-screenshot.js        gera as capturas de tela (requer Playwright)
+nexo/
+├── server.js            servidor HTTP: sessão, controle de acesso, CSRF, cabeçalhos
+├── package.json         comandos npm start e npm test; exige Node.js >= 22.5
+├── README.md            este arquivo
+├── lib/                 acesso a dados e módulos de apoio
+│   ├── db.js            esquema do banco, migrações e índices
+│   ├── repo.js          consultas SQL preparadas e transações
+│   ├── security.js      token anti-CSRF, limite de tentativas, cookies, imagens
+│   ├── session.js       sessões (mantidas em memória)
+│   ├── auth.js          hash e verificação de senhas (scrypt)
+│   ├── http-helpers.js  leitura de formulários e de multipart, escape de HTML
+│   ├── mailer.js        envio simulado de e-mails (data/outbox)
+│   ├── config.js        configurações e prazos
+│   └── seed.js          dados de demonstração
+├── routes/              rotas e regras de negócio, um módulo por funcionalidade
+├── views/               geração das páginas HTML
+├── public/              style.css, app.js e uploads/ (somente imagens)
+├── tests/               11 arquivos de teste (node:test) e o navegador de testes
+├── seed-assets/         imagens usadas nos dados de demonstração
+├── diagramas/           diagramas do sistema e suas fontes em Mermaid
+├── relatorio/           resultado da última execução dos testes
+├── screenshot.js        geração das capturas de tela (requer Playwright, não incluído)
+├── screenshots/         capturas de tela geradas por screenshot.js
+└── data/                banco SQLite e e-mails simulados, criados na execução
 ```
+
+Limitações conhecidas da arquitetura: as regras
+de negócio ficam nas rotas, sem uma camada de serviços; o roteamento e a leitura
+de `multipart/form-data` foram escritos sem bibliotecas; as sessões e o limite
+de tentativas ficam em memória (perdidos ao reiniciar e inadequados para mais de
+uma instância).
