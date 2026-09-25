@@ -1,0 +1,12 @@
+# Execução da suíte em um clone limpo do repositório (git clone), sem npm install
+# Data: 2026-09-25 18:35 UTC | Node v22.22.2 | commit d17ebe5
+ls: cannot access 'node_modules': No such file or directory
+1..77
+# tests 77
+# suites 0
+# pass 77
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8051.155456
