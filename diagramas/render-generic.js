@@ -1,5 +1,5 @@
 const path = require('path');
-const { chromium } = require('/home/claude/.npm-global/lib/node_modules/playwright');
+const { chromium } = require('playwright');
 
 const inputName = process.argv[2];
 const outputName = process.argv[3] || inputName.replace(/\.html$/, '.png');
