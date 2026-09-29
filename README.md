@@ -6,6 +6,9 @@ clientes, no modelo de economia de plataformas.
 Implementado em **Node.js puro**, sem frameworks nem bibliotecas externas
 (apenas módulos nativos: `node:http`, `node:sqlite`, `node:crypto`, `node:fs`,
 `node:test`). **Não é necessário rodar `npm install`.**
+As páginas não carregam nada de serviços externos: a fonte dos títulos (Poppins)
+é servida pelo próprio protótipo, sob a SIL Open Font License 1.1
+(`public/fonts/OFL.txt`).
 
 ## Requisitos
 
@@ -138,10 +141,10 @@ nexo/
 │   └── seed.js          dados de demonstração
 ├── routes/              rotas e regras de negócio, um módulo por funcionalidade
 ├── views/               geração das páginas HTML
-├── public/              style.css, app.js e uploads/ (somente imagens)
-├── tests/               11 arquivos de teste (node:test) e o navegador de testes
+├── public/              style.css, app.js, fonts/ (Poppins) e uploads/ (somente imagens)
+├── tests/               12 arquivos de teste (node:test) e o navegador de testes
 ├── seed-assets/         imagens usadas nos dados de demonstração
-├── diagramas/           diagramas do sistema e suas fontes em Mermaid
+├── diagramas/           diagramas do sistema e suas fontes (Mermaid e HTML)
 ├── relatorio/           resultado da última execução dos testes
 ├── screenshot.js        geração das capturas de tela (requer Playwright, não incluído)
 ├── screenshots/         capturas de tela geradas por screenshot.js

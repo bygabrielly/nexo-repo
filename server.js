@@ -36,6 +36,7 @@ const STATIC_TYPES = {
   '.jpeg': 'image/jpeg',
   '.png': 'image/png',
   '.webp': 'image/webp',
+  '.woff': 'font/woff',
 };
 
 const cookie = security.buildCookie;
@@ -100,7 +101,7 @@ function createApp() {
       const pathname = url.pathname;
       const method = req.method === 'HEAD' ? 'GET' : req.method;
 
-      if (method === 'GET' && (pathname === '/style.css' || pathname === '/app.js' || pathname.startsWith('/uploads/'))) {
+      if (method === 'GET' && (pathname === '/style.css' || pathname === '/app.js' || pathname.startsWith('/fonts/') || pathname.startsWith('/uploads/'))) {
         return serveStatic(res, pathname);
       }
 

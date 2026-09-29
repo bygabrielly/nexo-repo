@@ -2,115 +2,133 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<!-- Diagrama de entidade-relacionamento do banco de dados (versão final).
+     Tabelas posicionadas em colunas; ligações ortogonais com notação pé de galinha.
+     Gerar a imagem: node render-generic.js der.html der.png -->
 <style>
   * { box-sizing: border-box; }
-  body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: #ffffff; padding: 30px; }
-  .wrap { position: relative; width: 960px; height: 620px; }
-  .entity {
-    position: absolute;
-    width: 260px;
-    border: 1.6px solid #4a4458;
-    border-radius: 6px;
-    background: #f7f5fb;
-    overflow: hidden;
-  }
-  .entity h4 {
-    margin: 0; padding: 8px 10px; background: #ded2f2; font-size: 14px;
-    text-align: center; border-bottom: 1.6px solid #4a4458;
-  }
-  .entity ul { list-style: none; margin: 0; padding: 6px 12px; font-size: 11.5px; color: #211a2e; }
-  .entity li { padding: 2px 0; }
-  .pk { font-weight: bold; text-decoration: underline; }
-  .fk { font-style: italic; color: #4a4458; }
-  #users { left: 20px; top: 20px; }
-  #portfolio { left: 20px; top: 330px; }
-  #services { left: 350px; top: 300px; }
-  #messages { left: 660px; top: 20px; }
-  svg.rel { position: absolute; left: 0; top: 0; overflow: visible; }
-  .rel-label { position: absolute; font-size: 11px; color: #4a4458; background: #fff; padding: 0 4px; }
+  body { margin: 0; background: #fff; font-family: Arial, Helvetica, sans-serif; }
+  .wrap { position: relative; width: 1130px; height: 1090px; background: #fff; }
+  svg { position: absolute; left: 0; top: 0; }
+  .t { position: absolute; width: 200px; border: 1.6px solid #4a4458; border-radius: 5px; background: #fff; overflow: hidden; z-index: 2; }
+  .t h4 { margin: 0; height: 38px; line-height: 37px; text-align: center; font-size: 17px; background: #ded2f2; color: #211a2e; border-bottom: 1.6px solid #4a4458; }
+  .t div { height: 30px; line-height: 30px; padding: 0 10px; font-size: 16px; color: #211a2e; display: flex; justify-content: space-between; border-top: 1px solid #e4dff0; }
+  .t div:first-of-type { border-top: 0; }
+  .t div b { font-size: 13px; color: #4a4458; }
+  .t div.pk span { text-decoration: underline; }
+  .lb { position: absolute; z-index: 3; background: #fff; color: #211a2e; font-size: 14px; line-height: 17px; padding: 1px 4px; text-align: center; white-space: nowrap; transform: translate(-50%, -50%); }
+  .legenda { position: absolute; left: 20px; top: 1041px; font-size: 15px; color: #211a2e; }
+  .leg { position: absolute; font-size: 15px; color: #211a2e; transform: translateY(-50%); }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <svg class="rel" width="960" height="620">
-    <!-- users (1) -> services (N) -->
-    <line x1="270" y1="200" x2="350" y2="300" stroke="#4a4458" stroke-width="1.6"/>
-    <!-- services (1) -> messages (N) via service_id -->
-    <line x1="610" y1="300" x2="700" y2="170" stroke="#4a4458" stroke-width="1.6"/>
-    <!-- users (1) -> messages (N) via sender_id/receiver_id -->
-    <line x1="280" y1="70" x2="660" y2="90" stroke="#4a4458" stroke-width="1.6" stroke-dasharray="4 3"/>
-    <!-- users (1) -> portfolio_items (N) -->
-    <line x1="150" y1="258" x2="150" y2="330" stroke="#4a4458" stroke-width="1.6"/>
-  </svg>
-  <span class="rel-label" style="left:245px; top:210px;">1</span>
-  <span class="rel-label" style="left:335px; top:290px;">N</span>
-  <span class="rel-label" style="left:600px; top:295px;">1</span>
-  <span class="rel-label" style="left:690px; top:175px;">N</span>
-  <span class="rel-label" style="left:285px; top:58px;">1</span>
-  <span class="rel-label" style="left:640px; top:78px;">N</span>
-  <span class="rel-label" style="left:160px; top:262px;">1</span>
-  <span class="rel-label" style="left:160px; top:314px;">N</span>
-
-  <div class="entity" id="users">
-    <h4>users</h4>
-    <ul>
-      <li class="pk">id (PK)</li>
-      <li>name</li>
-      <li>email (único)</li>
-      <li>password_hash</li>
-      <li>role (cliente | freelancer)</li>
-      <li>area</li>
-      <li>bio</li>
-      <li>avatar_url</li>
-      <li>cover_url</li>
-      <li>linkedin_url</li>
-      <li>created_at</li>
-    </ul>
-  </div>
-
-  <div class="entity" id="portfolio">
-    <h4>portfolio_items</h4>
-    <ul>
-      <li class="pk">id (PK)</li>
-      <li class="fk">user_id (FK &rarr; users.id)</li>
-      <li>image_url</li>
-      <li>title</li>
-      <li>description</li>
-      <li>created_at</li>
-    </ul>
-  </div>
-
-  <div class="entity" id="services">
-    <h4>services</h4>
-    <ul>
-      <li class="pk">id (PK)</li>
-      <li class="fk">user_id (FK &rarr; users.id)</li>
-      <li>title</li>
-      <li>description</li>
-      <li>category</li>
-      <li>price</li>
-      <li>keywords</li>
-      <li>created_at</li>
-    </ul>
-  </div>
-
-  <div class="entity" id="messages">
-    <h4>messages</h4>
-    <ul>
-      <li class="pk">id (PK)</li>
-      <li class="fk">service_id (FK &rarr; services.id)</li>
-      <li class="fk">sender_id (FK &rarr; users.id)</li>
-      <li class="fk">receiver_id (FK &rarr; users.id)</li>
-      <li>content</li>
-      <li>created_at</li>
-    </ul>
-  </div>
-
-  <div style="position:absolute; left:20px; top:520px; width:900px; font-size:11.5px; color:#4a4458; line-height:1.5;">
-    Um usuário (freelancer) publica vários serviços e vários itens de portfólio (1:N em ambos os casos). Um serviço
-    pode receber várias mensagens (1:N). Um usuário pode enviar e receber várias mensagens, papéis representados
-    pelas chaves estrangeiras sender_id e receiver_id, ambas referenciando users.id (relação 1:N tracejada).
-  </div>
+<div class="wrap" id="w">
+  <svg id="s" width="1130" height="1090"></svg>
+  <div class="legenda">PK = chave primária &nbsp;·&nbsp; FK = chave estrangeira &nbsp;·&nbsp; UK = valor único</div>
 </div>
+<script>
+// [nome, x, y, largura, campos: [nome, chave]]
+const T = {
+  portfolio_items: [20, 70, 200, [['id', 'PK'], ['user_id', 'FK'], ['deleted_at', '']]],
+  password_resets: [20, 250, 200, [['id', 'PK'], ['user_id', 'FK'], ['token_hash', 'UK']]],
+  conversations:   [20, 450, 200, [['id', 'PK'], ['client_id', 'FK'], ['freelancer_id', 'FK'], ['service_id', 'FK'], ['project_id', 'FK'], ['order_id', 'FK']]],
+  chat_messages:   [20, 740, 200, [['id', 'PK'], ['conversation_id', 'FK'], ['sender_id', 'FK'], ['content', '']]],
+  users:           [310, 70, 200, [['id', 'PK'], ['name', ''], ['email', 'UK'], ['password_hash', ''], ['role', ''], ['avatar_url', ''], ['consent_at', ''], ['deleted_at', '']]],
+  projects:        [310, 450, 200, [['id', 'PK'], ['client_id', 'FK'], ['category', ''], ['status', '']]],
+  services:        [590, 70, 200, [['id', 'PK'], ['user_id', 'FK'], ['category', ''], ['price', ''], ['delivery_days', ''], ['deleted_at', '']]],
+  proposals:       [590, 410, 200, [['id', 'PK'], ['freelancer_id', 'FK'], ['project_id', 'FK'], ['price', ''], ['delivery_days', ''], ['status', '']]],
+  reviews:         [590, 730, 200, [['id', 'PK'], ['order_id', 'FK, UK'], ['client_id', 'FK'], ['freelancer_id', 'FK'], ['service_id', 'FK'], ['rating', ''], ['comment', ''], ['published_at', '']]],
+  orders:          [870, 70, 200, [['id', 'PK'], ['client_id', 'FK'], ['freelancer_id', 'FK'], ['service_id', 'FK'], ['project_id', 'FK'], ['proposal_id', 'FK'], ['price', ''], ['delivery_days', ''], ['status', ''], ['completed_at', '']]],
+  order_events:    [870, 480, 170, [['id', 'PK'], ['order_id', 'FK'], ['actor_id', 'FK'], ['event', '']]],
+  client_reviews:  [870, 730, 200, [['id', 'PK'], ['order_id', 'FK, UK'], ['client_id', 'FK'], ['freelancer_id', 'FK'], ['rating', ''], ['comment', ''], ['published_at', '']]],
+};
+const w = document.getElementById('w');
+const box = {};
+for (const [nome, [x, y, larg, campos]] of Object.entries(T)) {
+  const d = document.createElement('section');
+  d.className = 't';
+  d.style.left = x + 'px'; d.style.top = y + 'px'; d.style.width = larg + 'px';
+  d.innerHTML = '<h4>' + nome + '</h4>' + campos.map(([c, k]) =>
+    '<div class="' + (k === 'PK' ? 'pk' : '') + '"><span>' + c + '</span><b>' + k + '</b></div>').join('');
+  w.appendChild(d);
+  box[nome] = { x, y, w: larg, h: 38 + 30 * campos.length, campos: campos.map((c) => c[0]) };
+}
+const B = (t) => box[t];
+const linha = (t, campo) => B(t).y + 38 + 30 * B(t).campos.indexOf(campo) + 15; // centro da linha do campo
+const esq = (t) => B(t).x, dir = (t) => B(t).x + B(t).w, topo = (t) => B(t).y, base = (t) => B(t).y + B(t).h;
+
+const s = document.getElementById('s');
+const NS = 'http://www.w3.org/2000/svg';
+const COR = '#4a4458';
+function el(n, a) { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); s.appendChild(e); return e; }
+function rotulo(txt, x, y) {
+  const l = document.createElement('div'); l.className = 'lb'; l.innerHTML = txt;
+  l.style.left = x + 'px'; l.style.top = y + 'px'; w.appendChild(l);
+}
+// símbolo na ponta: p = ponto na borda da tabela; d = direção do último trecho (entrando na tabela)
+function simbolo(tipo, p, d) {
+  const [px, py] = p, [dx, dy] = d, nx = -dy, ny = dx;
+  const at = (a, n) => [px - dx * a + nx * n, py - dy * a + ny * n];
+  const barra = (a) => { const [x1, y1] = at(a, -8), [x2, y2] = at(a, 8); el('line', { x1, y1, x2, y2, stroke: COR, 'stroke-width': 1.6 }); };
+  const circ = (a) => { const [cx, cy] = at(a, 0); el('circle', { cx, cy, r: 5, fill: '#fff', stroke: COR, 'stroke-width': 1.6 }); };
+  const pe = () => { const [ox, oy] = at(14, 0); for (const n of [-9, 0, 9]) { const [x2, y2] = at(0, n); el('line', { x1: ox, y1: oy, x2, y2, stroke: COR, 'stroke-width': 1.6 }); } };
+  if (tipo === 'um') { barra(7); barra(13); }
+  if (tipo === 'zero-um') { barra(8); circ(19); }
+  if (tipo === 'zero-muitos') { pe(); circ(21); }
+}
+// pts: lista de pontos da ligação (ortogonal); a = símbolo no início, b = símbolo no fim
+function ligar(pts, a, b, txt, lx, ly) {
+  el('polyline', { points: pts.map((p) => p.join(',')).join(' '), fill: 'none', stroke: COR, 'stroke-width': 1.5 });
+  const dirv = (p, q) => { const dx = Math.sign(q[0] - p[0]), dy = Math.sign(q[1] - p[1]); return [dx, dy]; };
+  simbolo(a, pts[0], dirv(pts[1], pts[0]));
+  simbolo(b, pts[pts.length - 1], dirv(pts[pts.length - 2], pts[pts.length - 1]));
+  rotulo(txt, lx, ly);
+}
+
+// users → portfolio_items, password_resets (linhas retas à esquerda)
+let y = linha('portfolio_items', 'user_id');
+ligar([[esq('users'), y], [dir('portfolio_items'), y]], 'um', 'zero-muitos', 'possui', 265, y - 14);
+y = linha('password_resets', 'user_id');
+ligar([[esq('users'), y], [dir('password_resets'), y]], 'um', 'zero-muitos', 'solicita', 265, y - 14);
+// users → conversations (sai por baixo de users e desce pelo corredor à esquerda)
+let yc = (base('users') + topo('projects')) / 2, yf = linha('conversations', 'client_id');
+ligar([[340, base('users')], [340, yc], [265, yc], [265, yf], [dir('conversations'), yf]], 'um', 'zero-muitos', 'participa', 265, (yc + yf) / 2 + 20);
+// conversations → chat_messages
+ligar([[120, base('conversations')], [120, topo('chat_messages')]], 'um', 'zero-muitos', 'contém', 120, (base('conversations') + topo('chat_messages')) / 2);
+// users → projects
+ligar([[410, base('users')], [410, topo('projects')]], 'um', 'zero-muitos', 'publica<br>(cliente)', 430, (base('users') + topo('projects')) / 2);
+// users → services
+y = linha('services', 'user_id');
+ligar([[dir('users'), y], [esq('services'), y]], 'um', 'zero-muitos', 'publica', 550, y - 14);
+// users → proposals
+yf = linha('proposals', 'freelancer_id');
+ligar([[dir('users'), 310], [550, 310], [550, yf], [esq('proposals'), yf]], 'um', 'zero-muitos', 'envia<br>(freelancer)', 550, 395);
+// projects → proposals
+y = linha('proposals', 'project_id');
+ligar([[dir('projects'), y], [esq('proposals'), y]], 'um', 'zero-muitos', 'recebe', 550, y + 16);
+// users → orders (pela parte de cima)
+ligar([[450, topo('users')], [450, 34], [990, 34], [990, topo('orders')]], 'um', 'zero-muitos', 'cliente / freelancer', 720, 34);
+// services → orders
+y = linha('orders', 'service_id');
+ligar([[dir('services'), y], [esq('orders'), y]], 'zero-um', 'zero-muitos', 'origem', 830, y - 14);
+// proposals → orders
+yf = linha('orders', 'proposal_id');
+ligar([[dir('proposals'), 440], [825, 440], [825, yf], [esq('orders'), yf]], 'zero-um', 'zero-um', 'origem', 825, 356);
+// orders → order_events
+ligar([[955, base('orders')], [955, topo('order_events')]], 'um', 'zero-muitos', 'histórico', 955, (base('orders') + topo('order_events')) / 2);
+// orders → reviews
+yf = linha('reviews', 'order_id');
+ligar([[esq('orders'), 390], [845, 390], [845, yf], [dir('reviews'), yf]], 'um', 'zero-um', 'cliente<br>avalia', 845, 684);
+// orders → client_reviews
+ligar([[1055, base('orders')], [1055, topo('client_reviews')]], 'um', 'zero-um', 'freelancer<br>avalia', 1055, 684);
+// legenda da cardinalidade
+[['um', 'exatamente um', 510], ['zero-um', 'zero ou um', 710], ['zero-muitos', 'zero ou muitos', 890]].forEach(([tipo, txt, x0]) => {
+  const yl = 1050;
+  el('line', { x1: x0, y1: yl, x2: x0 + 50, y2: yl, stroke: COR, 'stroke-width': 1.5 });
+  simbolo(tipo, [x0 + 50, yl], [1, 0]);
+  const l = document.createElement('div'); l.className = 'leg'; l.textContent = txt;
+  l.style.left = (x0 + 60) + 'px'; l.style.top = yl + 'px'; w.appendChild(l);
+});
+</script>
 </body>
 </html>

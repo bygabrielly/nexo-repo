@@ -1,6 +1,83 @@
 # Execução da suíte em um clone limpo do repositório (git clone), sem npm install
-# Data: 2026-09-25 18:35 UTC | Node v22.22.2 | commit d17ebe5
+# Data: 2026-09-29 02:10 UTC | Node v22.22.2 | commit a862c1e
 ls: cannot access 'node_modules': No such file or directory
+ok 1 - T01 — Cadastro com dados válidos cria a conta e inicia a sessão
+ok 2 - T02 — Cadastro com e-mail já utilizado é recusado
+ok 3 - T03 — Política de senha e confirmação da senha são exigidas no cadastro
+ok 4 - T04 — Cadastro exige aceite da política de privacidade (LGPD) e registra o consentimento
+ok 5 - T05 — Login com credenciais corretas autentica o usuário
+ok 6 - T06 — Login com senha incorreta é recusado com mensagem genérica
+ok 7 - T07 — Rota protegida redireciona ao login e, após autenticar, retorna à página pedida
+ok 8 - T08 — Redirecionamento após login não aceita endereços externos (open redirect)
+ok 9 - T09 — Logout invalida a sessão no servidor
+ok 10 - T10 — Um novo identificador de sessão é gerado a cada login (proteção contra fixação de sessão)
+ok 11 - T11 — Cookie de sessão emitido com HttpOnly e SameSite=Lax
+ok 12 - T12 — Recuperação de senha: link de uso único, que redefine a senha e encerra as sessões antigas
+ok 13 - T13 — Envio de formulário sem token anti-CSRF é recusado
+ok 14 - T14 — Token anti-CSRF de outra sessão não é aceito
+ok 15 - T15 — Upload de script disfarçado de imagem (.png com Content-Type image/png) é rejeitado
+ok 16 - T16 — Upload de imagem PNG real é aceito, com nome aleatório e extensão definida pelo conteúdo
+ok 17 - T17 — Conteúdo com código HTML/JavaScript é exibido como texto (proteção contra XSS armazenado)
+ok 18 - T18 — Respostas trazem cabeçalhos de segurança (CSP sem scripts embutidos, nosniff, antienquadramento)
+ok 19 - T19 — E-mail do freelancer não é exibido no perfil público
+ok 20 - T20 — Mensagens são privadas: um cliente não vê a conversa de outro cliente com o mesmo freelancer
+ok 21 - T21 — Pedido só pode ser acessado pelo cliente e pelo freelancer envolvidos
+ok 22 - T22 — Arquivos fora das pastas públicas não podem ser obtidos (path traversal)
+ok 23 - T23 — Controle de acesso por papel: cliente não publica serviço; freelancer não publica projeto
+ok 24 - T73 — A pasta de uploads só entrega imagens: outro tipo de arquivo colocado nela não é servido
+ok 25 - T24 — Freelancer publica serviço e é redirecionado para a página dele (Post/Redirect/Get)
+ok 26 - T25 — Validação do formulário de serviço (título, categoria, descrição, prazo)
+ok 27 - T26 — Freelancer não consegue editar nem excluir serviço de outro freelancer
+ok 28 - T27 — Exclusão de serviço pode ser desfeita
+ok 29 - T28 — Busca encontra o serviço por termo presente apenas nas palavras-chave
+ok 30 - T29 — Filtros de categoria, preço, prazo e avaliação, isolados e combinados
+ok 31 - T30 — Ordenação por menor preço e por avaliação
+ok 32 - T70 — Paginação da busca: 12 serviços por página, com link para a página seguinte
+ok 33 - T72 — Item do portfólio: o dono exclui e restaura; outro freelancer não consegue excluí-lo
+ok 34 - T31 — Cliente contrata um serviço: o pedido é criado como "solicitado" e o freelancer é notificado
+ok 35 - T32 — Ações fora de ordem ou do papel errado são bloqueadas
+ok 36 - T33 — Fluxo completo: aceitar, entregar, pedir ajuste, entregar de novo e aprovar
+ok 37 - T34 — Transição inválida é recusada (aprovar um pedido já concluído)
+ok 38 - T35 — Avaliação do freelancer: só pelo cliente, só após a conclusão, uma vez; o freelancer responde publicamente
+ok 39 - T36 — Reputação: média de avaliações e pedidos concluídos aparecem no perfil e nos cartões
+ok 40 - T37 — Serviço "a combinar": o freelancer precisa informar o valor para aceitar
+ok 41 - T38 — Cancelamento exige motivo e fica registrado no histórico
+ok 42 - T39 — Conversa do pedido é compartilhada apenas entre as duas partes
+ok 43 - T65 — Pedido com prazo vencido é sinalizado, e a entrega fora do prazo fica registrada
+ok 44 - T40 — Cliente publica projeto com orçamento e prazo
+ok 45 - T41 — Validação do projeto (orçamento mínimo maior que o máximo)
+ok 46 - T42 — Freelancers enviam propostas; proposta duplicada é recusada
+ok 47 - T43 — Somente o autor do projeto pode aceitar uma proposta
+ok 48 - T44 — Aceitar proposta cria o pedido, recusa as demais e fecha o projeto para novas propostas
+ok 49 - T45 — Freelancer retira proposta enviada
+ok 50 - T64 — Freelancer que retirou a proposta pode enviar uma nova, com os dados anteriores pré-preenchidos
+ok 51 - T66 — Projetos abertos filtrados por orçamento e ordenados por maior orçamento ou menos propostas
+ok 52 - T46 — Exportação dos dados do titular em JSON (LGPD, art. 18), sem dados de terceiros
+ok 53 - T47 — Alterar a senha exige a senha atual e encerra as outras sessões
+ok 54 - T48 — Exclusão da conta anonimiza os dados, preserva o histórico da outra parte e impede novo login
+ok 55 - T49 — Páginas de política de privacidade e de ajuda estão acessíveis a visitantes
+ok 56 - T50 — Após 5 tentativas de login com senha errada, novas tentativas são bloqueadas (inclusive com a senha certa)
+ok 57 - T51 — hashPassword/verifyPassword: salt aleatório e verificação correta
+ok 58 - T52 — Política de senha
+ok 59 - T53 — detectImageType reconhece PNG, JPEG e WEBP pela assinatura e rejeita o resto
+ok 60 - T54 — AttemptLimiter bloqueia após o limite e libera após o tempo de bloqueio
+ok 61 - T55 — safeNext aceita só caminhos internos
+ok 62 - T56 — escapeHtml neutraliza os caracteres especiais de HTML
+ok 63 - T57 — Token anti-CSRF é vinculado à sessão
+ok 64 - T67 — Sessão expira após 2 h sem uso e 12 h após o login, mesmo se usada continuamente
+ok 65 - T68 — Cookie de sessão recebe o atributo Secure quando o sistema é servido por HTTPS
+ok 66 - T58 — Acessibilidade estrutural (WCAG 1.1.1, 1.3.1, 2.4.1, 3.1.1, 4.1.2) em 38 páginas, para os três perfis de acesso
+ok 67 - T59 — Contraste mínimo de 4,5:1 (WCAG 1.4.3, nível AA) em todos os pares de cor de texto da interface
+ok 68 - T60 — Avaliação mútua às cegas: nenhuma nota é exibida até que as duas partes avaliem
+ok 69 - T61 — Prazo de 14 dias: avaliações pendentes são publicadas ao fim do prazo e novas avaliações são recusadas
+ok 70 - T62 — Conclusão automática: entrega sem resposta do cliente por 3 dias conclui o pedido
+ok 71 - T63 — Reputação do cliente: nota, pedidos concluídos e comentários visíveis no projeto e no pedido
+ok 72 - T69 — Mensagens não lidas: contador no menu, marcação como lida ao abrir e novo aviso a cada mensagem
+ok 73 - T71 — Migração: mensagens de um banco da primeira versão viram conversas privadas por cliente
+ok 74 - T74 — Edição do perfil: nome, área, biografia, LinkedIn e foto aparecem no perfil público; LinkedIn inválido é recusado
+ok 75 - T75 — Busca ordenada por prazo e por data; projetos abertos buscados por palavra-chave
+ok 76 - T76 — Pergunta sobre um projeto abre conversa privada entre o freelancer e o autor do projeto
+ok 77 - T77 — Leitura das requisições: corpo acima do limite e multipart em página que não recebe arquivos são recusados
 1..77
 # tests 77
 # suites 0
@@ -9,4 +86,4 @@ ls: cannot access 'node_modules': No such file or directory
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 8051.155456
+# duration_ms 8429.82221

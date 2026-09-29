@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<!-- Diagrama de estados do pedido de contratação (notação UML).
+     Caminho principal na linha de cima; recusa e cancelamento na linha de baixo.
+     Gerar a imagem: node render-generic.js estados-pedido.html estados-pedido.png -->
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #fff; font-family: Arial, Helvetica, sans-serif; }
+  .wrap { position: relative; width: 1160px; height: 480px; background: #fff; }
+  svg { position: absolute; left: 0; top: 0; }
+  .st { position: absolute; height: 50px; line-height: 48px; text-align: center; font-size: 18px; font-weight: bold; color: #211a2e;
+        background: #ded2f2; border: 1.6px solid #4a4458; border-radius: 12px; transform: translate(-50%, -50%); z-index: 2; }
+  .lb { position: absolute; z-index: 3; background: #fff; color: #211a2e; font-size: 15px; line-height: 18px; padding: 1px 4px;
+        text-align: center; white-space: nowrap; transform: translate(-50%, -50%); }
+</style>
+</head>
+<body>
+<div class="wrap" id="w">
+  <svg id="s" width="1160" height="480">
+    <defs>
+      <marker id="seta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="13" markerHeight="13" markerUnits="userSpaceOnUse" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="#211a2e"/>
+      </marker>
+    </defs>
+  </svg>
+</div>
+<script>
+const w = document.getElementById('w'), s = document.getElementById('s'), NS = 'http://www.w3.org/2000/svg';
+function el(n, a) { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); s.appendChild(e); return e; }
+function estado(txt, x, y, larg) {
+  const d = document.createElement('div'); d.className = 'st'; d.textContent = txt;
+  d.style.left = x + 'px'; d.style.top = y + 'px'; d.style.width = larg + 'px'; w.appendChild(d);
+}
+function rotulo(txt, x, y) {
+  const d = document.createElement('div'); d.className = 'lb'; d.innerHTML = txt;
+  d.style.left = x + 'px'; d.style.top = y + 'px'; w.appendChild(d);
+}
+function trans(pts, txt, lx, ly) {
+  el('polyline', { points: pts.map((p) => p.join(',')).join(' '), fill: 'none', stroke: '#4a4458', 'stroke-width': 1.6, 'marker-end': 'url(#seta)' });
+  if (txt) rotulo(txt, lx, ly);
+}
+
+// estados: linha de cima (caminho principal) e linha de baixo (recusa e cancelamento)
+const A = 190, Bl = 370;
+estado('solicitado', 250, A, 140);
+estado('em andamento', 520, A, 170);
+estado('entregue', 790, A, 130);
+estado('concluído', 1060, A, 130);
+estado('recusado', 210, Bl, 130);
+estado('cancelado', 520, Bl, 130);
+
+// estado inicial e estado final
+el('circle', { cx: 40, cy: A, r: 11, fill: '#211a2e' });
+el('circle', { cx: 1060, cy: Bl, r: 13, fill: '#fff', stroke: '#211a2e', 'stroke-width': 2 });
+el('circle', { cx: 1060, cy: Bl, r: 7.5, fill: '#211a2e' });
+
+// criação do pedido
+trans([[51, A], [178, A]], 'cliente contrata<br>um serviço', 112, A - 26);
+trans([[40, A - 11], [40, 50], [480, 50], [480, A - 27]], 'cliente aceita uma proposta', 260, 50);
+// caminho principal
+trans([[320, A], [433, A]], 'freelancer<br>aceita', 377, A - 26);
+trans([[605, A], [723, A]], 'freelancer<br>entrega', 664, A - 26);
+trans([[760, A - 25], [760, 110], [570, 110], [570, A - 27]], 'cliente pede ajustes', 665, 110);
+trans([[855, A - 12], [993, A - 12]], 'cliente aprova', 924, A - 32);
+trans([[855, A + 12], [993, A + 12]], '3 dias sem resposta', 924, A + 32);
+// recusa e cancelamento
+trans([[210, A + 25], [210, Bl - 27]], 'freelancer<br>recusa', 210, 280);
+trans([[300, A + 25], [300, Bl], [453, Bl]], 'cancelamento<br>com motivo', 378, Bl - 24);
+trans([[520, A + 25], [520, Bl - 27]], 'cancelamento<br>com motivo', 520, 280);
+// encerramento
+trans([[1060, A + 25], [1060, Bl - 15]], 'avaliações mútuas<br>(14 dias)', 1060, 285);
+trans([[585, Bl], [1045, Bl]]);
+trans([[210, Bl + 25], [210, 455], [1060, 455], [1060, Bl + 15]]);
+</script>
+</body>
+</html>

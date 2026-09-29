@@ -1,0 +1,164 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="UTF-8"><style>
+body{margin:0;background:#fff;font-family:Arial,Helvetica,sans-serif}
+.wrap{display:inline-block;background:#fff}
+</style></head><body><div class="wrap"><svg id="d" xmlns="http://www.w3.org/2000/svg"></svg></div>
+<script>
+const D = {"participantes":[{"id":"C","nome":"Visitante ou cliente"},{"id":"N","nome":"Navegador"},{"id":"R","nome":"routes/public.js"},{"id":"D","nome":"lib/repo.js"},{"id":"B","nome":"SQLite"},{"id":"V","nome":"views/"}],"eventos":[{"tipo":"msg","de":"C","para":"N","tracejada":false,"linhas":["termo, categoria, preço,","prazo, nota e ordenação"],"n":1},{"tipo":"msg","de":"N","para":"R","tracejada":false,"linhas":["GET /servicos?q=...&preco_max=...&ordem=...","(via server.js)"],"n":2},{"tipo":"msg","de":"R","para":"R","tracejada":false,"linhas":["valida e normaliza os filtros"],"n":3},{"tipo":"msg","de":"R","para":"D","tracejada":false,"linhas":["searchServices(filtros, página)"],"n":4},{"tipo":"msg","de":"D","para":"D","tracejada":false,"linhas":["WHERE só com os filtros informados,","valores como parâmetros (?)"],"n":5},{"tipo":"msg","de":"D","para":"B","tracejada":false,"linhas":["SELECT COUNT(*) ...","SELECT ... LIMIT ? OFFSET ?"],"n":6},{"tipo":"msg","de":"B","para":"D","tracejada":true,"linhas":["total e serviços da página"],"n":7},{"tipo":"msg","de":"D","para":"R","tracejada":true,"linhas":["{ total, rows }"],"n":8},{"tipo":"msg","de":"R","para":"V","tracejada":false,"linhas":["servicesPage(result, filters)"],"n":9},{"tipo":"msg","de":"V","para":"R","tracejada":true,"linhas":["HTML (dados com escape)"],"n":10},{"tipo":"msg","de":"R","para":"N","tracejada":true,"linhas":["200 — resultados, filtros e paginação"],"n":11}]};
+const FONTE = 14, ALT_LINHA = 18, COR = '#4a4458', TEXTO = '#211a2e', FUNDO_ATOR = '#ded2f2';
+const ctx = document.createElement('canvas').getContext('2d');
+ctx.font = FONTE + 'px Arial';
+const larg = (t) => ctx.measureText(t).width;
+const largBloco = (ls) => Math.max(...ls.map(larg));
+const svg = document.getElementById('d');
+const NS = 'http://www.w3.org/2000/svg';
+function el(nome, attrs, pai = svg) {
+  const e = document.createElementNS(NS, nome);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  pai.appendChild(e);
+  return e;
+}
+function texto(ls, x, y, ancora, opts = {}) {
+  // y = linha de base da primeira linha; desenha fundo branco atrás do bloco
+  const w = largBloco(ls), h = ls.length * ALT_LINHA;
+  const x0 = ancora === 'middle' ? x - w / 2 : x;
+  if (opts.fundo !== false) el('rect', { x: x0 - 4, y: y - FONTE - 1, width: w + 8, height: h + 2, fill: opts.fundo || '#fff' });
+  ls.forEach((l, i) => {
+    const t = el('text', { x, y: y + i * ALT_LINHA, 'text-anchor': ancora === 'middle' ? 'middle' : 'start', 'font-size': FONTE, fill: TEXTO, 'font-weight': opts.negrito ? 'bold' : 'normal' });
+    t.textContent = l;
+  });
+}
+
+// ---- colunas ----
+const idx = {};
+D.participantes.forEach((p, i) => { idx[p.id] = i; p.w = Math.max(larg(p.nome) + 36, 120); });
+const P = D.participantes, np = P.length;
+const gap = [];
+for (let i = 0; i < np - 1; i++) gap[i] = P[i].w / 2 + P[i + 1].w / 2 + 28;
+const LAÇO = 30;
+const exigir = (a, b, dist) => {
+  const atual = gap.slice(a, b).reduce((s, g) => s + g, 0);
+  if (atual < dist) for (let k = a; k < b; k++) gap[k] += (dist - atual) / (b - a);
+};
+const msgs = D.eventos.filter((e) => e.tipo === 'msg');
+// mensagens entre vizinhos primeiro, depois as mais longas
+msgs.slice().sort((x, y) => Math.abs(idx[x.de] - idx[x.para]) - Math.abs(idx[y.de] - idx[y.para])).forEach((e) => {
+  const a = idx[e.de], b = idx[e.para];
+  const w = largBloco(e.linhas);
+  if (a === b) { if (a < np - 1) exigir(a, a + 1, LAÇO + 14 + w + 24); }
+  else exigir(Math.min(a, b), Math.max(a, b), w + 44);
+});
+const MARGEM = 20;
+const xs = [];
+let x = MARGEM + P[0].w / 2;
+P.forEach((p, i) => { xs[i] = x; if (i < np - 1) x += gap[i]; });
+let direita = xs[np - 1] + P[np - 1].w / 2 + MARGEM;
+msgs.forEach((e) => { if (idx[e.de] === idx[e.para]) direita = Math.max(direita, xs[idx[e.de]] + LAÇO + 14 + largBloco(e.linhas) + MARGEM); });
+
+// ---- linhas verticais (desenhadas antes, ficam por trás) ----
+const TOPO = 12, ALT_ATOR = 46;
+const gVida = el('g', {});
+const gFrag = el('g', {});
+const gCorpo = el('g', {});
+
+// ---- eventos ----
+let y = TOPO + ALT_ATOR + 26;
+const pilha = [];
+const alcance = (evs) => {
+  let a = np, b = -1;
+  for (const e of evs) if (e.de) { a = Math.min(a, idx[e.de], idx[e.para]); b = Math.max(b, idx[e.de], idx[e.para]); }
+  return [a, b];
+};
+// pré-calcula o alcance de cada fragmento alt
+D.eventos.forEach((e, i) => {
+  if (e.tipo !== 'alt') return;
+  let prof = 0, j = i + 1; const dentro = [];
+  for (; j < D.eventos.length; j++) {
+    const f = D.eventos[j];
+    if (f.tipo === 'alt') prof++;
+    if (f.tipo === 'end') { if (prof === 0) break; prof--; }
+    dentro.push(f);
+  }
+  e.alcance = alcance(dentro);
+});
+const defs = el('defs', {});
+const seta = el('marker', { id: 'seta', viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: 9, markerHeight: 9, orient: 'auto-start-reverse' }, defs);
+el('path', { d: 'M0,0 L10,5 L0,10 z', fill: TEXTO }, seta);
+
+function numero(n, cx, cy) {
+  el('circle', { cx, cy, r: 10, fill: TEXTO }, gCorpo);
+  const t = el('text', { x: cx, y: cy + 4, 'text-anchor': 'middle', 'font-size': 11, fill: '#fff', 'font-weight': 'bold' }, gCorpo);
+  t.textContent = n;
+}
+const guardas = [];
+for (const e of D.eventos) {
+  if (e.tipo === 'msg') {
+    const a = idx[e.de], b = idx[e.para];
+    const h = e.linhas.length * ALT_LINHA;
+    if (a === b) {
+      const x0 = xs[a];
+      const yTop = y + 4, yBot = yTop + Math.max(26, h);
+      el('path', { d: 'M' + x0 + ',' + yTop + ' H' + (x0 + LAÇO) + ' V' + yBot + ' H' + (x0 + 2), fill: 'none', stroke: TEXTO, 'stroke-width': 1.4, 'marker-end': 'url(#seta)' }, gCorpo);
+      texto(e.linhas, x0 + LAÇO + 12, yTop + (yBot - yTop - h) / 2 + FONTE - 2, 'start');
+      numero(e.n, x0, yTop);
+      y = yBot + 26;
+    } else {
+      y += h + 4;
+      const x1 = xs[a], x2 = xs[b];
+      const dir = x2 > x1 ? 1 : -1;
+      texto(e.linhas, (x1 + x2) / 2, y - h - 4 + FONTE - 2, 'middle');
+      el('line', { x1, y1: y, x2: x2 - dir * 2, y2: y, stroke: TEXTO, 'stroke-width': 1.4, 'stroke-dasharray': e.tracejada ? '5,4' : 'none', 'marker-end': 'url(#seta)' }, gCorpo);
+      numero(e.n, x1, y);
+      y += 24;
+    }
+  } else if (e.tipo === 'alt') {
+    const [a, b] = e.alcance;
+    const fr = { x1: xs[a] - 40, x2: xs[b] + 40, y1: y, secoes: [y] };
+    pilha.push(fr);
+    guardas.push({ x: fr.x1, y, texto: '[' + e.guarda + ']', tag: true });
+    y += 38;
+  } else if (e.tipo === 'else') {
+    const fr = pilha[pilha.length - 1];
+    y += 2;
+    fr.secoes.push(y);
+    guardas.push({ x: fr.x1, y, texto: '[' + e.guarda + ']', tag: false });
+    y += 34;
+  } else if (e.tipo === 'end') {
+    const fr = pilha.pop();
+    y += 2;
+    el('rect', { x: fr.x1, y: fr.y1, width: fr.x2 - fr.x1, height: y - fr.y1, fill: 'none', stroke: COR, 'stroke-width': 1.3, 'stroke-dasharray': '6,4' }, gFrag);
+    fr.secoes.slice(1).forEach((ys) => el('line', { x1: fr.x1, y1: ys, x2: fr.x2, y2: ys, stroke: COR, 'stroke-width': 1.3, 'stroke-dasharray': '6,4' }, gFrag));
+    y += 22;
+  } else if (e.tipo === 'nota') {
+    const a = idx[e.de], b = idx[e.para];
+    const w = Math.max(largBloco(e.linhas) + 28, xs[b] - xs[a] + 60);
+    const cx = (xs[a] + xs[b]) / 2;
+    const h = e.linhas.length * ALT_LINHA + 16;
+    el('rect', { x: cx - w / 2, y, width: w, height: h, fill: '#faf9fc', stroke: COR, 'stroke-width': 1.2 }, gCorpo);
+    e.linhas.forEach((l, i) => {
+      const t = el('text', { x: cx, y: y + 8 + FONTE + i * ALT_LINHA - 1, 'text-anchor': 'middle', 'font-size': FONTE, fill: TEXTO, 'font-style': 'italic' }, gCorpo);
+      t.textContent = l;
+    });
+    y += h + 24;
+  }
+}
+// rótulos dos fragmentos (acima de tudo)
+for (const g of guardas) {
+  if (g.tag) {
+    el('path', { d: 'M' + g.x + ',' + g.y + ' h44 v14 l-8,8 h-36 z', fill: FUNDO_ATOR, stroke: COR, 'stroke-width': 1.3 });
+    const t = el('text', { x: g.x + 8, y: g.y + 16, 'font-size': FONTE, 'font-weight': 'bold', fill: TEXTO });
+    t.textContent = 'alt';
+    texto([g.texto], g.x + 56, g.y + 17, 'start');
+  } else {
+    texto([g.texto], g.x + 56, g.y + 19, 'start');
+  }
+}
+const fim = y + 6;
+P.forEach((p, i) => {
+  el('line', { x1: xs[i], y1: TOPO + ALT_ATOR, x2: xs[i], y2: fim, stroke: COR, 'stroke-width': 1.2 }, gVida);
+  el('rect', { x: xs[i] - p.w / 2, y: TOPO, width: p.w, height: ALT_ATOR, rx: 4, fill: FUNDO_ATOR, stroke: COR, 'stroke-width': 1.4 });
+  const t = el('text', { x: xs[i], y: TOPO + ALT_ATOR / 2 + 5, 'text-anchor': 'middle', 'font-size': FONTE + 1, 'font-weight': 'bold', fill: TEXTO });
+  t.textContent = p.nome;
+});
+svg.setAttribute('width', Math.ceil(direita));
+svg.setAttribute('height', Math.ceil(fim + 12));
+</script></body></html>
