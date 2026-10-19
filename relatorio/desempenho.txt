@@ -1,10 +1,10 @@
 # Tempo de resposta sob carga mínima: 500 requisições por página, 10 em paralelo
-# Data: 2026-10-19 01:28 UTC | Node v22.22.0 | Linux 6.18.44-fc-v139 | 2 núcleos (Intel(R) Xeon(R) Processor @ 2.10GHz) | 7.8 GB | versão 2.0.1 (package.json)
+# Data: 2026-10-19 12:46 UTC | Node v22.22.0 | Linux 6.18.44-fc-v139 | 2 núcleos (Intel(R) Xeon(R) Processor @ 2.80GHz) | 7.8 GB | versão 2.0.2 (package.json)
 # Servidor e cliente na mesma máquina; banco com os dados de demonstração.
 página                                                         | mediana (ms) | p95 (ms) | máx. (ms) | req/s | erros
-/                                                              |         24.7 |     35.5 |      75.7 |   383 | 0
-/servicos?q=site&ordem=menor_preco                             |         13.4 |     22.6 |      41.2 |   684 | 0
-/servicos?categoria=Programa%C3%A7%C3%A3o&preco_max=2000&nota=4 |         13.1 |     20.5 |      25.7 |   713 | 0
-/servicos/1                                                    |          9.2 |     15.5 |      17.0 |  1009 | 0
-/freelancers/1                                                 |         12.6 |     19.5 |      29.6 |   727 | 0
-/pedidos                                                       |          8.3 |     18.8 |      26.9 |  1003 | 0
+/                                                              |         35.3 |     58.4 |     140.8 |   249 | 0
+/servicos?q=site&ordem=menor_preco                             |         15.3 |     31.3 |      50.3 |   573 | 0
+/servicos?categoria=Programa%C3%A7%C3%A3o&preco_max=2000&nota=4 |         15.8 |     24.1 |      36.4 |   583 | 0
+/servicos/1                                                    |         12.4 |     21.8 |      24.9 |   768 | 0
+/freelancers/1                                                 |         14.1 |     22.5 |      28.0 |   659 | 0
+/pedidos                                                       |          9.3 |     15.5 |      19.8 |   982 | 0

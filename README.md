@@ -13,13 +13,14 @@ As páginas não carregam nada de serviços externos: a fonte dos títulos (Popp
 ## Requisitos
 
 - Node.js 22.13 ou superior (usa o módulo `node:sqlite`, disponível sem opções adicionais a partir dessa versão)
-- Versões em que a suíte foi executada: Node.js 22.22.2 (SQLite 3.51.2) e Node.js 22.22.0 (SQLite 3.50.4), em Linux, e também em Windows (`relatorio/execucao-windows.txt`); os demais registros da pasta `relatorio/` são da versão 22.22.0, em Linux
+- A suíte foi executada em Linux (Node.js 22.22.0, SQLite 3.50.4) e em Windows; os registros das verificações complementares da pasta `relatorio/` informam a data, a versão do Node.js e a versão do protótipo, `resultado-testes.txt` é a saída de `npm test`, e os registros de execução (`execucao-*.txt`) informam também o sistema e o commit testado
 
 ## Como executar
 
 ```bash
 node server.js      # ou: npm start
 npm test            # executa a suíte de testes
+npm run registro    # executa a suíte e grava relatorio/execucao-<sistema>.txt com ambiente, versão e commit
 ```
 
 Acesse http://localhost:3000. Na primeira execução o banco SQLite é criado em
@@ -144,7 +145,7 @@ Verificações complementares (resultados na pasta `relatorio/`):
 ```bash
 node --test --experimental-test-coverage --test-concurrency=1 --test-coverage-exclude='tests/**' tests/*.test.js   # cobertura
 node scripts/isolamento.js       # cada teste executado sozinho; suíte em ordem inversa e em paralelo
-node scripts/mutacao.js          # teste de mutação dos módulos críticos (30 mutantes)
+node scripts/mutacao.js          # teste de mutação dos módulos críticos (33 mutantes)
 node scripts/desempenho.js       # tempo de resposta sob carga mínima
 node scripts/e2e-navegador.js    # ponta a ponta em navegador real (requer Playwright)
 node scripts/manutenibilidade.js # dependências entre módulos, complexidade e duplicação
@@ -173,7 +174,7 @@ nexo/
 ├── views/               geração das páginas HTML
 ├── public/              style.css, app.js e fonts/ (Poppins)
 ├── tests/               14 arquivos de teste (node:test), o navegador de testes e imagens de teste
-├── scripts/             isolamento, mutação, desempenho, navegador real e manutenibilidade
+├── scripts/             registro da execução, isolamento, mutação, desempenho, navegador real e manutenibilidade
 ├── seed-assets/         imagens usadas nos dados de demonstração
 ├── diagramas/           diagramas do sistema e suas fontes (Mermaid e HTML)
 ├── relatorio/           resultados dos testes e das verificações complementares

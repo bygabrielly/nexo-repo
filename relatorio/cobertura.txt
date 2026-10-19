@@ -1,5 +1,5 @@
 # Cobertura de código da suíte de testes (node --test --experimental-test-coverage)
-# Data: 2026-10-19 01:27 UTC | Node v22.22.0 | SQLite 3.50.4 | Linux 6.18.44-fc-v139 | versão 2.0.1 (package.json)
+# Data: 2026-10-19 14:43 UTC | Node v22.22.0 | SQLite 3.50.4 | Linux 6.18.44-fc-v139 | versão 2.0.2 (package.json)
 # Comando: node --test --experimental-test-coverage --test-concurrency=1 --test-coverage-exclude='tests/**' tests/*.test.js
 # tests 87
 # suites 0
@@ -8,7 +8,7 @@
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 10704.7847
+# duration_ms 12850.401541
 # start of coverage report
 # ------------------------------------------------------------------------
 # file             | line % | branch % | funcs % | uncovered lines
@@ -20,7 +20,7 @@
 #  http-helpers.js |  95.86 |    78.26 |  100.00 | 15-16 62-63 85-86
 #  images.js       | 100.00 |    80.60 |  100.00 | 
 #  mailer.js       |  92.00 |    66.67 |  100.00 | 20-21
-#  repo.js         |  98.64 |    84.48 |  100.00 | 64-66 373-375
+#  repo.js         |  98.64 |    86.21 |  100.00 | 64-66 373-375
 #  security.js     | 100.00 |    97.53 |  100.00 | 
 #  seed.js         |  98.44 |    80.00 |  100.00 | 187-189
 #  session.js      | 100.00 |   100.00 |  100.00 | 
@@ -45,9 +45,9 @@
 #  layout.js       | 100.00 |   100.00 |  100.00 | 
 #  messages.js     | 100.00 |    72.73 |  100.00 | 
 #  orders.js       | 100.00 |    93.28 |  100.00 | 
-#  projects.js     | 100.00 |    81.25 |  100.00 | 
-#  public.js       |  99.70 |    83.16 |   95.24 | 153
+#  projects.js     | 100.00 |    83.58 |  100.00 | 
+#  public.js       | 100.00 |    84.04 |   95.24 | 
 # ------------------------------------------------------------------------
-# all files        |  98.53 |    82.91 |   97.63 | 
+# all files        |  98.55 |    83.17 |   97.63 | 
 # ------------------------------------------------------------------------
 # end of coverage report

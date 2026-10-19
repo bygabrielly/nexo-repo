@@ -1,7 +1,7 @@
 # Verificação de isolamento: cada teste executado sozinho, em um processo novo
 # (node --test --test-name-pattern="^Txx " arquivo), além da suíte completa em ordem normal,
 # com os arquivos em ordem inversa e com os arquivos em paralelo.
-# Data: 2026-10-19 01:27 UTC | Node v22.22.0 | Linux 6.18.44-fc-v139 | versão 2.0.1 (package.json)
+# Data: 2026-10-19 14:44 UTC | Node v22.22.0 | Linux 6.18.44-fc-v139 | versão 2.0.2 (package.json)
 T01 01-autenticacao.test.js pass=1 fail=0
 T02 01-autenticacao.test.js pass=1 fail=0
 T03 01-autenticacao.test.js pass=1 fail=0

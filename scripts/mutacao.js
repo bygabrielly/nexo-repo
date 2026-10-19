@@ -48,6 +48,9 @@ const MUTANTES = [
   ['M28', 'routes/account.js', "fs.rmSync(path.join(config.UPLOADS_DIR, path.basename(url)), { force: true });", '', 'LGPD: imagens não são apagadas na exclusão da conta'],
   ['M29', 'lib/repo.js', "if (!a || !b) return false;", "if (!a && !b) return false;", 'Avaliação mútua: publicada com apenas uma das avaliações'],
   ['M30', 'lib/security.js', "'Content-Security-Policy': CSP,", "'Content-Security-Policy': CSP.replace(\"script-src 'self'\", \"script-src 'self' 'unsafe-inline'\"),", 'Cabeçalhos: política de conteúdo passa a permitir scripts embutidos'],
+  ['M31', 'lib/repo.js', "where += ' AND (s.title LIKE ? OR s.description LIKE ? OR s.keywords LIKE ?)';\n    params.push(`%${q}%`, `%${q}%`, `%${q}%`);", "where += ` AND (s.title LIKE '%${q}%' OR s.description LIKE '%${q}%' OR s.keywords LIKE '%${q}%')`;", 'Injeção de SQL: termo da busca de serviços concatenado à consulta'],
+  ['M32', 'lib/repo.js', "if (q) { where += ' AND (p.title LIKE ? OR p.description LIKE ?)'; params.push(`%${q}%`, `%${q}%`); }", "if (q) { where += ` AND (p.title LIKE '%${q}%' OR p.description LIKE '%${q}%')`; }", 'Injeção de SQL: termo da busca de projetos concatenado à consulta'],
+  ['M33', 'lib/repo.js', "byEmail: db.prepare('SELECT * FROM users WHERE email = ? AND deleted_at IS NULL'),", "byEmail: { get: (email) => db.prepare(`SELECT * FROM users WHERE email = '${email}' AND deleted_at IS NULL`).get() },", 'Injeção de SQL: e-mail do login concatenado à consulta'],
 ];
 
 function runSuite() {
@@ -65,12 +68,16 @@ for (const [id, file, from, to, desc] of MUTANTES) {
   if (only.length && !only.includes(id)) continue;
   const full = path.join(ROOT, file);
   const original = fs.readFileSync(full, 'utf8');
-  if (original.split(from).length !== 2) {
+  // Os trechos usam '\n'; no Windows o git pode gravar os arquivos com '\r\n'.
+  const eol = original.includes('\r\n') ? '\r\n' : '\n';
+  const [de, para] = [from, to].map((t) => t.replace(/\n/g, eol));
+  if (original.split(de).length !== 2) {
     results.push({ id, file, desc, status: 'ERRO: trecho não encontrado exatamente uma vez' });
+    console.log(`${id} ERRO       ${file.padEnd(20)} ${desc} (trecho não encontrado exatamente uma vez)`);
     continue;
   }
   try {
-    fs.writeFileSync(full, original.replace(from, to));
+    fs.writeFileSync(full, original.replace(de, () => para));
     const { failed } = runSuite();
     results.push({ id, file, desc, status: failed.length ? 'morto' : 'sobreviveu', by: failed.slice(0, 6) });
   } finally {

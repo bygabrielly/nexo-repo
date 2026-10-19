@@ -49,7 +49,7 @@ test('T74 — Edição do perfil: dados e foto aparecem no perfil público; Link
   assert.equal((await fetch(`${app.base}/uploads/${primeira[1]}`)).status, 404);
 });
 
-test('T75 — Busca ordenada por prazo e por data; projetos abertos buscados por palavra-chave', async () => {
+test('T75 — Busca ordenada por prazo e por data; projetos buscados por palavra-chave; SQL malicioso na busca, na ordenação e no login é tratado como dado', async () => {
   const b = new Browser(app.base);
   const titulos = (html) => [...html.matchAll(/<h3><a href="\/servicos\/\d+">([^<]+)<\/a><\/h3>/g)].map((m) => m[1].trim());
   const porPrazo = titulos((await b.get('/servicos?ordem=prazo')).body);
@@ -62,6 +62,31 @@ test('T75 — Busca ordenada por prazo e por data; projetos abertos buscados por
   const projetos = await b.get('/projetos?q=' + encodeURIComponent('landing page'));
   assert.match(projetos.body, /Landing page para lançamento de coleção/);
   assert.doesNotMatch(projetos.body, /Vídeo curto para redes sociais do escritório/);
+
+  // Injeção de SQL: os valores chegam à consulta como parâmetros e são comparados como texto.
+  // Se fossem concatenados ao SQL, "' OR '1'='1" formaria uma consulta válida que devolve
+  // todos os registros, e "' OR 1=1 --" uma consulta inválida (erro 500).
+  for (const termo of ["' OR '1'='1", "' OR 1=1 --"]) {
+    const servicos = await b.get('/servicos?q=' + encodeURIComponent(termo));
+    assert.equal(servicos.status, 200, `busca de serviços com ${termo}`);
+    assert.deepEqual(titulos(servicos.body), [], `a condição injetada (${termo}) não devolve serviços`);
+    assert.match(servicos.body, /Nenhum serviço encontrado com esses filtros/);
+    const projetosInjecao = await b.get('/projetos?q=' + encodeURIComponent(termo));
+    assert.equal(projetosInjecao.status, 200, `busca de projetos com ${termo}`);
+    assert.match(projetosInjecao.body, /Nenhum projeto aberto com esses filtros/);
+    assert.doesNotMatch(projetosInjecao.body, /Landing page para lançamento de coleção/);
+  }
+  const injecaoOrdem = await b.get('/servicos?ordem=' + encodeURIComponent('prazo; DROP TABLE users; --'));
+  assert.equal(injecaoOrdem.status, 200);
+  assert.deepEqual(titulos(injecaoOrdem.body), recentes, 'ordenação desconhecida volta à ordem padrão');
+  // Com o e-mail concatenado, a condição seleciona o primeiro usuário e a senha de demonstração
+  // (comum a todas as contas) autenticaria; como parâmetro, o e-mail não existe.
+  const login = await b.post('/login', { email: "ninguem@example.com' OR '1'='1", password: 'conta demo 2026' }, { from: '/login' });
+  assert.equal(login.status, 400);
+  assert.ok(!b.cookies.sid, 'o e-mail com SQL não autentica');
+  const conta = new Browser(app.base);
+  await conta.login('cliente@example.com');
+  assert.ok(conta.cookies.sid, 'a tabela de usuários continua intacta');
 });
 
 test('T76 — Pergunta sobre um projeto abre conversa privada entre o freelancer e o autor do projeto', async () => {

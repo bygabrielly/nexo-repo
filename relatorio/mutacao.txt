@@ -1,6 +1,6 @@
 # Teste de mutação manual dos módulos críticos (node scripts/mutacao.js)
 # Cada mutante introduz um defeito plausível; 'morto' = ao menos um teste falhou; entre parênteses, os testes que o detectaram.
-# Data: 2026-10-19 01:21 UTC | Node v22.22.0 | Linux 6.18.44-fc-v139 | versão 2.0.1 (package.json) | suíte com 87 testes
+# Data: 2026-10-19 14:54 UTC | Node v22.22.0 | Linux 6.18.44-fc-v139 | versão 2.0.2 (package.json) | suíte com 87 testes
 
 M01 morto      lib/security.js      CSRF: token de tamanho errado passa a ser aceito (T13, T57)
 M02 morto      lib/security.js      CSRF: qualquer token de 64 caracteres é aceito (T14, T57)
@@ -32,12 +32,15 @@ M27 morto      lib/images.js        Upload: limite de dimensões só quando os d
 M28 morto      routes/account.js    LGPD: imagens não são apagadas na exclusão da conta (T84)
 M29 morto      lib/repo.js          Avaliação mútua: publicada com apenas uma das avaliações (T60, T61)
 M30 morto      lib/security.js      Cabeçalhos: política de conteúdo passa a permitir scripts embutidos (T18)
+M31 morto      lib/repo.js          Injeção de SQL: termo da busca de serviços concatenado à consulta (T75)
+M32 morto      lib/repo.js          Injeção de SQL: termo da busca de projetos concatenado à consulta (T75)
+M33 morto      lib/repo.js          Injeção de SQL: e-mail do login concatenado à consulta (T75)
 
-Mutantes mortos: 29 de 30 (escore de mutação: 96.7%)
+Mutantes mortos: 32 de 33 (escore de mutação: 97.0%)
 
 O sobrevivente é um mutante equivalente no protótipo — o defeito não é observável porque outra camada já o impede:
 - M11: o analisador de URL do Node.js (WHATWG) normaliza '..', '%2e%2e' e '\\' antes de o caminho chegar ao servidor de arquivos estáticos; a verificação removida é defesa em profundidade.
-Escore sobre os mutantes não equivalentes: 29 de 29 (100%).
+Escore sobre os mutantes não equivalentes: 32 de 32 (100%).
 
 Histórico:
 - Primeira execução (16/10/2026): 24 de 30 mutantes mortos (80,0%). Os sobreviventes M09, M17, M20 e M24 revelaram verificações
@@ -45,3 +48,6 @@ Histórico:
   apenas na lista de senhas comuns e PNG com checksum adulterado), e os testes T53, T34, T52 e T83 foram reforçados.
 - Revisão (19/10/2026): M23, antes classificado como equivalente, mostrou-se observável quando outra pessoa está conectada no
   navegador que abre o link de redefinição de senha (a rota não é exclusiva de visitantes); o teste T12 foi reforçado e passou a matá-lo.
+- Versão 2.0.2 (19/10/2026): acrescentados os mutantes M31 a M33 (termo da busca de serviços, termo da busca de projetos e e-mail do
+  login concatenados à consulta SQL). Os três sobreviveram à suíte da versão 2.0.1, que não enviava entradas com SQL malicioso; o teste
+  T75 foi reforçado com buscas, ordenação e login com SQL malicioso e passou a matá-los.

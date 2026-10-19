@@ -1,5 +1,5 @@
 # Métricas de manutenibilidade (node scripts/manutenibilidade.js)
-# Data: 2026-10-19 01:27 UTC | Node v22.22.0 | Linux 6.18.44-fc-v139 | versão 2.0.1 (package.json)
+# Data: 2026-10-19 12:46 UTC | Node v22.22.0 | Linux 6.18.44-fc-v139 | versão 2.0.2 (package.json)
 # Arquivos medidos: server.js, public/app.js, lib/, routes/ e views/ (32 módulos)
 
 módulo                     linhas  funções  importa  importado por  maior complexidade
