@@ -16,12 +16,17 @@ test('T51 — hashPassword/verifyPassword: salt aleatório e verificação corre
   assert.ok(!verifyPassword('senha1234', 'formato-invalido'));
 });
 
-test('T52 — Política de senha', () => {
-  assert.deepEqual(passwordProblems('abc12345', 'abc12345'), []);
-  assert.equal(passwordProblems('abc12', 'abc12').length, 1);
-  assert.equal(passwordProblems('abcdefgh').length, 1);
-  assert.equal(passwordProblems('12345678').length, 1);
-  assert.equal(passwordProblems('abc12345', 'abc12346').length, 1);
+test('T52 — Política de senha: 12 a 128 caracteres, frases aceitas, senhas comuns e previsíveis recusadas', () => {
+  assert.deepEqual(passwordProblems('um gato pulou o muro', 'um gato pulou o muro'), [], 'frase com espaços é aceita');
+  assert.deepEqual(passwordProblems('Xk7#pQ2!vL9m'), [], 'senha aleatória de 12 caracteres é aceita');
+  assert.equal(passwordProblems('abc12345678').length, 1, 'menos de 12 caracteres');
+  assert.equal(passwordProblems('a'.repeat(129)).length, 1, 'mais de 128 caracteres');
+  assert.equal(passwordProblems('um  gato  pulou').length, 0, 'espaços seguidos contam como um, e a frase ainda tem 15 caracteres');
+  for (const p of ['qwerty123456', '1q2w3e4r5t6y', 'megaparol12345', 'startfinding', 'aaaaaaaaaaaa', '123456789012', 'senha2026senha', 'minha casa tem janela azul']) {
+    assert.equal(passwordProblems(p).length, 1, `previsível: ${p}`);
+  }
+  assert.equal(passwordProblems('marina e seus gatos', undefined, { email: 'marina@example.com' }).length, 1, 'contém o e-mail');
+  assert.equal(passwordProblems('frase longa demais aqui', 'frase longa demais ali').length, 1, 'confirmação diferente');
 });
 
 test('T53 — detectImageType reconhece PNG, JPEG e WEBP pela assinatura e rejeita o resto', () => {
@@ -31,6 +36,8 @@ test('T53 — detectImageType reconhece PNG, JPEG e WEBP pela assinatura e rejei
   assert.equal(detectImageType(Buffer.from('#!/bin/sh\necho oi\n')), null);
   assert.equal(detectImageType(Buffer.from('<svg onload="alert(1)"></svg>')), null);
   assert.equal(detectImageType(Buffer.from('GIF89a......')), null);
+  const semPrimeiroByte = Buffer.from(PNG_1PX); semPrimeiroByte[0] = 0x00; // "\0PNG..." não é PNG
+  assert.equal(detectImageType(semPrimeiroByte), null);
 });
 
 test('T54 — AttemptLimiter bloqueia após o limite e libera após o tempo de bloqueio', () => {

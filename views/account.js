@@ -91,10 +91,10 @@ function accountPage({ user, errors }) {
       <label for="current">Senha atual</label>
       <input type="password" id="current" name="current" required autocomplete="current-password">
       <label for="password">Nova senha</label>
-      <input type="password" id="password" name="password" required minlength="8" autocomplete="new-password" aria-describedby="pw-hint">
-      <p id="pw-hint" class="hint">Mínimo de 8 caracteres, com letras e números. As outras sessões abertas serão encerradas.</p>
+      <input type="password" id="password" name="password" required minlength="12" maxlength="128" autocomplete="new-password" aria-describedby="pw-hint">
+      <p id="pw-hint" class="hint">Mínimo de 12 caracteres. Uma frase fácil de lembrar, com espaços, é uma boa senha. As outras sessões abertas serão encerradas.</p>
       <label for="password_confirm">Confirme a nova senha</label>
-      <input type="password" id="password_confirm" name="password_confirm" required minlength="8" autocomplete="new-password">
+      <input type="password" id="password_confirm" name="password_confirm" required minlength="12" maxlength="128" autocomplete="new-password">
       <button type="submit" class="btn btn-primary">Alterar Senha</button>
     </form>
   </section>

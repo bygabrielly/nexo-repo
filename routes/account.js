@@ -1,5 +1,8 @@
 'use strict';
 
+const fs = require('node:fs');
+const path = require('node:path');
+const config = require('../lib/config');
 const repo = require('../lib/repo');
 const views = require('../views');
 const session = require('../lib/session');
@@ -13,7 +16,7 @@ async function changePassword(ctx) {
   const b = ctx.body;
   const errors = [];
   if (!verifyPassword(String(b.current || ''), ctx.user.password_hash)) errors.push('A senha atual está incorreta.');
-  errors.push(...passwordProblems(b.password, b.password_confirm));
+  errors.push(...passwordProblems(b.password, b.password_confirm, { email: ctx.user.email, name: ctx.user.name }));
   if (errors.length) return ctx.render(400, 'Conta e Privacidade', views.accountPage({ user: ctx.user, errors }), 'perfil');
   repo.users.updatePassword.run(hashPassword(b.password), ctx.user.id);
   session.destroyUserSessions(ctx.user.id, ctx.sid); // encerra as outras sessões abertas
@@ -35,7 +38,10 @@ async function deleteAccount(ctx) {
     return ctx.render(400, 'Conta e Privacidade', views.accountPage({ user: ctx.user, errors: ['Senha incorreta: a conta não foi excluída.'] }), 'perfil');
   }
   const userId = ctx.user.id;
-  repo.anonymizeUser(userId);
+  const files = repo.anonymizeUser(userId);
+  for (const url of files) { // apaga do disco as imagens enviadas pelo usuário
+    fs.rmSync(path.join(config.UPLOADS_DIR, path.basename(url)), { force: true });
+  }
   session.destroyUserSessions(userId);
   ctx.logout();
   ctx.user = null;

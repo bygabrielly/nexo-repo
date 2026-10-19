@@ -30,11 +30,11 @@ function registerPage({ errors, old = {}, next }) {
       <p id="email-hint" class="hint">Usado para entrar e recuperar a senha. Nunca é exibido publicamente.</p>
 
       <label for="password">Senha</label>
-      <input type="password" id="password" name="password" required minlength="8" autocomplete="new-password" aria-describedby="pw-hint">
-      <p id="pw-hint" class="hint">Mínimo de 8 caracteres, com letras e números.</p>
+      <input type="password" id="password" name="password" required minlength="12" maxlength="128" autocomplete="new-password" aria-describedby="pw-hint">
+      <p id="pw-hint" class="hint">Mínimo de 12 caracteres. Uma frase fácil de lembrar, com espaços, é uma boa senha.</p>
 
       <label for="password_confirm">Confirme a senha</label>
-      <input type="password" id="password_confirm" name="password_confirm" required minlength="8" autocomplete="new-password">
+      <input type="password" id="password_confirm" name="password_confirm" required minlength="12" maxlength="128" autocomplete="new-password">
 
       <div class="consent">
         <input type="checkbox" id="consent" name="consent" value="1" ${old.consent ? 'checked' : ''} required>
@@ -93,10 +93,10 @@ function resetPage({ token, errors, invalid }) {
     <form method="POST" action="/redefinir-senha" class="stacked-form">
       <input type="hidden" name="token" value="${e(token)}">
       <label for="password">Nova senha</label>
-      <input type="password" id="password" name="password" required minlength="8" autocomplete="new-password" aria-describedby="pw-hint">
-      <p id="pw-hint" class="hint">Mínimo de 8 caracteres, com letras e números.</p>
+      <input type="password" id="password" name="password" required minlength="12" maxlength="128" autocomplete="new-password" aria-describedby="pw-hint">
+      <p id="pw-hint" class="hint">Mínimo de 12 caracteres. Uma frase fácil de lembrar, com espaços, é uma boa senha.</p>
       <label for="password_confirm">Confirme a nova senha</label>
-      <input type="password" id="password_confirm" name="password_confirm" required minlength="8" autocomplete="new-password">
+      <input type="password" id="password_confirm" name="password_confirm" required minlength="12" maxlength="128" autocomplete="new-password">
       <button type="submit" class="btn btn-primary">Salvar nova senha</button>
     </form></div>`;
 }

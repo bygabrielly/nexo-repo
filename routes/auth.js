@@ -6,7 +6,7 @@ const views = require('../views');
 const config = require('../lib/config');
 const session = require('../lib/session');
 const { hashPassword, verifyPassword, passwordProblems } = require('../lib/auth');
-const { loginLimiter, safeNext } = require('../lib/security');
+const { loginThrottle, resetLimiter, deviceToken, deviceUserId, safeNext } = require('../lib/security');
 const { sendMail } = require('../lib/mailer');
 const { str } = require('./util');
 
@@ -26,7 +26,7 @@ async function register(ctx) {
   if (!old.name) errors.push('Informe seu nome.');
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(old.email)) errors.push('Informe um e-mail válido.');
   if (!['cliente', 'freelancer'].includes(old.role)) errors.push('Escolha se você é cliente ou freelancer.');
-  errors.push(...passwordProblems(b.password, b.password_confirm));
+  errors.push(...passwordProblems(b.password, b.password_confirm, { email: b.email, name: b.name }));
   if (!old.consent) errors.push('É preciso aceitar a política de privacidade e os termos de uso para criar a conta.');
   if (!errors.length && repo.users.byEmailAny.get(old.email)) errors.push('Já existe uma conta com este e-mail.');
   if (errors.length) return ctx.render(400, 'Criar Conta', views.registerPage({ errors, old, next }), 'cadastro');
@@ -47,27 +47,34 @@ async function login(ctx) {
   const email = str(ctx.body.email, 200).toLowerCase();
   const password = String(ctx.body.password || '');
   const next = safeNext(ctx.body.next);
-  const keys = [`email:${email}`, `ip:${clientIp(ctx)}`];
+  const ip = clientIp(ctx);
+  const found = repo.users.byEmail.get(email);
+  const knownDevice = !!found && deviceUserId(ctx.cookies.dev) === found.id;
 
-  const locked = Math.max(...keys.map((k) => loginLimiter.lockedFor(k)));
-  if (locked > 0) {
-    const min = Math.ceil(locked / 60000);
+  const { waitMs, reason } = loginThrottle.check({ email, ip, knownDevice });
+  if (waitMs > 0) {
+    const wait = waitMs >= 60000
+      ? `${Math.ceil(waitMs / 60000)} ${Math.ceil(waitMs / 60000) === 1 ? 'minuto' : 'minutos'}`
+      : `${Math.ceil(waitMs / 1000)} segundos`;
+    const why = reason === 'conta'
+      ? 'Houve várias tentativas sem sucesso para esta conta.'
+      : 'Muitas tentativas de login sem sucesso.';
     return ctx.render(429, 'Entrar', views.loginPage({
-      errors: [`Muitas tentativas de login sem sucesso. Por segurança, aguarde ${min} ${min === 1 ? 'minuto' : 'minutos'} e tente novamente, ou use "Esqueci minha senha".`],
+      errors: [`${why} Por segurança, aguarde ${wait} e tente novamente, ou use "Esqueci minha senha".`],
       old: { email }, next,
     }), 'login');
   }
 
-  const found = repo.users.byEmail.get(email);
   // A verificação é feita mesmo quando o e-mail não existe, para que o tempo
   // de resposta não revele quais e-mails estão cadastrados.
   const ok = verifyPassword(password, found ? found.password_hash : 'x:' + '0'.repeat(128)) && !!found;
   if (!ok) {
-    keys.forEach((k) => loginLimiter.fail(k));
+    loginThrottle.fail({ email, ip });
     return ctx.render(400, 'Entrar', views.loginPage({ errors: ['E-mail ou senha inválidos.'], old: { email }, next }), 'login');
   }
-  keys.forEach((k) => loginLimiter.reset(k));
+  loginThrottle.success({ email, ip });
   ctx.login(found.id); // novo identificador de sessão a cada login
+  ctx.setCookie('dev', deviceToken(found.id), { maxAge: config.DEVICE_COOKIE_MAX_AGE });
   ctx.setFlash(`Bem-vindo(a) de volta, ${found.name}!`, 'success');
   return ctx.redirect(next || '/');
 }
@@ -84,10 +91,10 @@ async function forgotForm(ctx) {
 async function forgot(ctx) {
   const email = str(ctx.body.email, 200).toLowerCase();
   const key = `reset:${clientIp(ctx)}`;
-  if (loginLimiter.lockedFor(key) > 0) {
+  if (resetLimiter.lockedFor(key) > 0) {
     return ctx.render(429, 'Recuperar senha', views.forgotPage({ sent: false, errors: ['Muitas solicitações. Aguarde alguns minutos e tente novamente.'] }), 'login');
   }
-  loginLimiter.fail(key); // limita pedidos de recuperação por endereço de origem
+  resetLimiter.fail(key); // limita pedidos de recuperação por endereço de origem
   const user = repo.users.byEmail.get(email);
   if (user) {
     const token = crypto.randomBytes(32).toString('hex');
@@ -121,7 +128,8 @@ async function reset(ctx) {
   const token = String(ctx.body.token || '');
   const row = findReset(token);
   if (!row) return ctx.render(400, 'Nova senha', views.resetPage({ invalid: true }), 'login');
-  const errors = passwordProblems(ctx.body.password, ctx.body.password_confirm);
+  const owner = repo.users.byId.get(row.user_id);
+  const errors = passwordProblems(ctx.body.password, ctx.body.password_confirm, { email: owner && owner.email, name: owner && owner.name });
   if (errors.length) return ctx.render(400, 'Nova senha', views.resetPage({ token, errors }), 'login');
   if (repo.resets.use.run(repo.now(), row.id).changes !== 1) return ctx.render(400, 'Nova senha', views.resetPage({ invalid: true }), 'login');
   repo.users.updatePassword.run(hashPassword(ctx.body.password), row.user_id);

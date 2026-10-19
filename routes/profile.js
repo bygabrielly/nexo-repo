@@ -1,5 +1,6 @@
 'use strict';
 
+const config = require('../lib/config');
 const repo = require('../lib/repo');
 const views = require('../views');
 const { str, id, saveUploadedImage, notFound, forbidden } = require('./util');
@@ -62,7 +63,10 @@ async function portfolioAdd(ctx) {
   const description = str(ctx.body.description, 600);
   const errors = [];
   let imageUrl = '';
-  if (!ctx.files.image) errors.push('Selecione uma imagem para adicionar ao portfólio.');
+  const max = config.MAX_PORTFOLIO_ITEMS;
+  if (repo.portfolio.byUser.all(ctx.user.id).length >= max) {
+    errors.push(`O portfólio pode ter no máximo ${max} itens. Remova um item para adicionar outro.`);
+  } else if (!ctx.files.image) errors.push('Selecione uma imagem para adicionar ao portfólio.');
   else {
     try { imageUrl = saveUploadedImage(ctx.files.image); } catch (err) { errors.push(err.message); }
   }
@@ -85,6 +89,10 @@ async function portfolioRemove(ctx) {
 }
 
 async function portfolioRestore(ctx) {
+  if (repo.portfolio.byUser.all(ctx.user.id).length >= config.MAX_PORTFOLIO_ITEMS) {
+    ctx.setFlash(`O portfólio pode ter no máximo ${config.MAX_PORTFOLIO_ITEMS} itens. Remova um item para restaurar outro.`, 'error');
+    return ctx.redirect('/perfil/portfolio');
+  }
   if (repo.portfolio.restore.run(id(ctx.params[0]), ctx.user.id).changes !== 1) return forbidden(ctx);
   ctx.setFlash('Item restaurado.', 'success');
   return ctx.redirect('/perfil/portfolio');
@@ -112,5 +120,5 @@ module.exports = [
   { method: 'POST', path: '/perfil/portfolio', auth: 'freelancer', multipart: true, handler: portfolioAdd },
   { method: 'POST', path: /^\/perfil\/portfolio\/(\d+)\/excluir$/, auth: 'freelancer', handler: portfolioRemove },
   { method: 'POST', path: /^\/perfil\/portfolio\/(\d+)\/restaurar$/, auth: 'freelancer', handler: portfolioRestore },
-  { method: 'POST', path: /^\/freelancers\/(\d+)\/mensagem$/, auth: 'cliente', handler: contactFreelancer },
+  { method: 'POST', path: /^\/freelancers\/(\d+)\/mensagem$/, auth: 'cliente', limit: 'mensagens', handler: contactFreelancer },
 ];

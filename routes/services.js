@@ -121,11 +121,11 @@ async function message(ctx) {
 module.exports = [
   { method: 'GET', path: '/meus-servicos', auth: 'freelancer', handler: myServices },
   { method: 'GET', path: '/servicos/novo', auth: 'freelancer', handler: newForm },
-  { method: 'POST', path: '/servicos/novo', auth: 'freelancer', handler: create },
+  { method: 'POST', path: '/servicos/novo', auth: 'freelancer', limit: 'publicacoes', handler: create },
   { method: 'GET', path: /^\/servicos\/(\d+)\/editar$/, auth: 'freelancer', handler: editForm },
   { method: 'POST', path: /^\/servicos\/(\d+)\/editar$/, auth: 'freelancer', handler: update },
   { method: 'POST', path: /^\/servicos\/(\d+)\/excluir$/, auth: 'freelancer', handler: remove },
   { method: 'POST', path: /^\/servicos\/(\d+)\/restaurar$/, auth: 'freelancer', handler: restore },
   { method: 'POST', path: /^\/servicos\/(\d+)\/contratar$/, auth: 'cliente', handler: hire },
-  { method: 'POST', path: /^\/servicos\/(\d+)\/mensagem$/, auth: 'cliente', handler: message },
+  { method: 'POST', path: /^\/servicos\/(\d+)\/mensagem$/, auth: 'cliente', limit: 'mensagens', handler: message },
 ];

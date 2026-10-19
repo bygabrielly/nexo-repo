@@ -13,7 +13,7 @@ As páginas não carregam nada de serviços externos: a fonte dos títulos (Popp
 ## Requisitos
 
 - Node.js 22.5 ou superior (usa o módulo `node:sqlite`)
-- Versão usada no desenvolvimento e nos testes: Node.js 22.22.2, com SQLite 3.51.2 embutido
+- Versões em que a suíte foi executada: Node.js 22.22.2 (SQLite 3.51.2) e Node.js 22.22.0 (SQLite 3.50.4), em Linux, e também em Windows (`relatorio/execucao-windows.txt`); os demais registros da pasta `relatorio/` são da versão 22.22.0, em Linux
 
 ## Como executar
 
@@ -79,15 +79,29 @@ pasta `data/` antes de iniciar.
 combinado, mas o protótipo não faz cobranças) e envio real de e-mails (ver
 abaixo).
 
-**Segurança** (referência: OWASP Top 10:2021)
-- Senhas com scrypt e salt; política mínima de senha.
+**Segurança** (referências: OWASP Top 10:2021 e OWASP ASVS 4.0.3). O protótipo
+implementa e testa controles relacionados a categorias selecionadas do OWASP
+Top 10; isso não equivale a uma auditoria de segurança completa.
+- Senhas com scrypt e salt. Política de senha: 12 a 128 caracteres, sem regras
+  de composição (frases com espaços são aceitas), recusando senhas da lista local
+  de senhas mais usadas (`lib/senhas-comuns.txt`), sequências óbvias e senhas que
+  contenham o e-mail ou o nome.
 - Token anti-CSRF em todos os formulários.
-- Limite de 5 tentativas de login em 15 minutos, por conta e por origem.
+- Login protegido sem permitir o bloqueio proposital de contas: 5 falhas em
+  15 minutos bloqueiam a combinação conta + origem; 20 falhas bloqueiam a origem;
+  por conta, a espera entre tentativas cresce até 60 s, exceto no navegador em
+  que o usuário já entrou (cookie de dispositivo conhecido).
+- Limite de envios por usuário: 30 mensagens a cada 10 minutos, 10 propostas e
+  10 publicações (serviços ou projetos) por hora.
 - Sessões com 256 bits de aleatoriedade, novo identificador a cada login,
   expiração por inatividade (2 h) e absoluta (12 h); cookie `HttpOnly` e
   `SameSite=Lax` (e `Secure` com `COOKIE_SECURE=1` quando servido por HTTPS).
 - Upload de imagens validado pela assinatura binária do arquivo (não pelo tipo
-  informado pelo navegador), com limite de 3 MB e nome aleatório.
+  informado pelo navegador), com limite de 3 MB e de 4000 × 4000 pixels, nome
+  aleatório, estrutura do arquivo verificada e remoção de metadados (EXIF com a
+  localização da foto, XMP, IPTC, textos embutidos); no máximo 24 itens de
+  portfólio por freelancer; arquivos guardados em `data/uploads`, fora da pasta
+  pública, e entregues por uma rota que só serve imagens.
 - Cabeçalhos de segurança: Content-Security-Policy sem scripts embutidos,
   `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`.
 - Controle de acesso por papel e por propriedade em todas as ações; escape de
@@ -97,8 +111,11 @@ abaixo).
 **Privacidade (LGPD)**
 - E-mail nunca exibido publicamente; contato pelas mensagens da plataforma.
 - Consentimento registrado no cadastro (data e versão da política).
-- Exportação dos dados do titular em JSON e exclusão da conta (com
-  anonimização do que pertence também à outra parte).
+- Exportação dos dados do titular em JSON e exclusão da conta: e-mail, senha,
+  dados do perfil e imagens enviadas são apagados; o nome é anonimizado nos
+  pedidos, conversas e avaliações, que permanecem por fazerem parte do histórico
+  da outra parte (detalhes na página Privacidade). São recursos relacionados aos
+  princípios e direitos da LGPD, não uma garantia de conformidade integral.
 
 **Usabilidade e acessibilidade (WCAG 2.2 AA)**
 - Retorno à página desejada após o login; desfazer exclusões; página de ajuda.
@@ -116,11 +133,22 @@ recuperação de senha são gravadas em `data/outbox/` e exibidas no console.
 npm test          # ou: node --test --test-concurrency=1 tests/*.test.js
 ```
 
-São 77 testes (T01 a T77). A maioria sobe o servidor com banco temporário e
-verifica, por meio de requisições HTTP reais, os requisitos funcionais, os
-controles de segurança, os recursos de LGPD e a acessibilidade de 38 páginas;
-os demais testam diretamente funções de segurança, a expiração das sessões, o
-contraste das cores e a migração de bancos da primeira versão.
+São 87 testes (T01 a T87): 75 de integração, que sobem o servidor com banco
+temporário e fazem requisições HTTP reais; 11 unitários (funções de segurança,
+sessão, política de senha e contraste das cores); e 1 de integração com o banco
+(migração de bancos da primeira versão). Cada teste prepara os próprios dados e
+pode ser executado sozinho.
+
+Verificações complementares (resultados na pasta `relatorio/`):
+
+```bash
+node --test --experimental-test-coverage --test-concurrency=1 --test-coverage-exclude='tests/**' tests/*.test.js   # cobertura
+node scripts/isolamento.js       # cada teste executado sozinho; suíte em ordem inversa e em paralelo
+node scripts/mutacao.js          # teste de mutação dos módulos críticos (30 mutantes)
+node scripts/desempenho.js       # tempo de resposta sob carga mínima
+node scripts/e2e-navegador.js    # ponta a ponta em navegador real (requer Playwright)
+node scripts/manutenibilidade.js # dependências entre módulos, complexidade e duplicação
+```
 
 ## Estrutura
 
@@ -132,7 +160,9 @@ nexo/
 ├── lib/                 acesso a dados e módulos de apoio
 │   ├── db.js            esquema do banco, migrações e índices
 │   ├── repo.js          consultas SQL preparadas e transações
-│   ├── security.js      token anti-CSRF, limite de tentativas, cookies, imagens
+│   ├── security.js      token anti-CSRF, proteção do login, limite de envios, cookies
+│   ├── images.js        validação das imagens enviadas e remoção de metadados
+│   ├── senhas-comuns.txt senhas mais usadas, recusadas no cadastro (SecLists, MIT)
 │   ├── session.js       sessões (mantidas em memória)
 │   ├── auth.js          hash e verificação de senhas (scrypt)
 │   ├── http-helpers.js  leitura de formulários e de multipart, escape de HTML
@@ -141,14 +171,15 @@ nexo/
 │   └── seed.js          dados de demonstração
 ├── routes/              rotas e regras de negócio, um módulo por funcionalidade
 ├── views/               geração das páginas HTML
-├── public/              style.css, app.js, fonts/ (Poppins) e uploads/ (somente imagens)
-├── tests/               12 arquivos de teste (node:test) e o navegador de testes
+├── public/              style.css, app.js e fonts/ (Poppins)
+├── tests/               14 arquivos de teste (node:test), o navegador de testes e imagens de teste
+├── scripts/             isolamento, mutação, desempenho, navegador real e manutenibilidade
 ├── seed-assets/         imagens usadas nos dados de demonstração
 ├── diagramas/           diagramas do sistema e suas fontes (Mermaid e HTML)
-├── relatorio/           resultado da última execução dos testes
+├── relatorio/           resultados dos testes e das verificações complementares
 ├── screenshot.js        geração das capturas de tela (requer Playwright, não incluído)
 ├── screenshots/         capturas de tela geradas por screenshot.js
-└── data/                banco SQLite e e-mails simulados, criados na execução
+└── data/                banco SQLite, imagens enviadas (uploads/) e e-mails simulados, criados na execução
 ```
 
 Limitações conhecidas da arquitetura: as regras

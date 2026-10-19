@@ -90,7 +90,20 @@ function maybeRunScheduledTasks() {
   repo.runScheduledTasks();
 }
 
+// Versões anteriores guardavam as imagens em public/uploads; na inicialização,
+// elas são copiadas para a pasta atual (fora de public/), sem sobrescrever nada.
+function migrateLegacyUploads() {
+  const from = config.LEGACY_UPLOADS_DIR;
+  if (process.env.UPLOADS_DIR || !fs.existsSync(from)) return;
+  fs.mkdirSync(config.UPLOADS_DIR, { recursive: true });
+  for (const name of fs.readdirSync(from)) {
+    const dest = path.join(config.UPLOADS_DIR, name);
+    if (!fs.existsSync(dest)) fs.copyFileSync(path.join(from, name), dest);
+  }
+}
+
 function createApp() {
+  migrateLegacyUploads();
   seedIfEmpty();
 
   return http.createServer(async (req, res) => {
@@ -126,7 +139,7 @@ function createApp() {
       }
 
       ctx = {
-        req, res, url, pathname, method, user,
+        req, res, url, pathname, method, user, cookies,
         get sid() { return sid; },
         query: url.searchParams,
         body: {}, files: {},
@@ -134,6 +147,7 @@ function createApp() {
         flash: sid ? session.popFlash(sid) : null,
       };
 
+      ctx.setCookie = (name, value, opts) => pending.push(cookie(name, value, opts));
       ctx.setFlash = (message, type = 'success', extra = null) => { if (sid) session.setFlash(sid, message, type, extra); };
       ctx.login = (userId) => {
         sid = session.createSession(userId, sid);
@@ -204,6 +218,16 @@ function createApp() {
         if (!security.csrfValid(sid || aid, ctx.body._csrf)) {
           return ctx.render(403, 'Requisição recusada', views.errorPage('Requisição recusada',
             'Não foi possível confirmar que este envio partiu do próprio Nexo (proteção contra CSRF). Recarregue a página e tente novamente.'));
+        }
+      }
+
+      // ---- limite de frequência por usuário (mensagens, propostas, publicações) ----
+      if (method === 'POST' && route.limit && user) {
+        const wait = security.actionLimiters[route.limit].take(user.id);
+        if (wait > 0) {
+          const min = Math.ceil(wait / 60000);
+          return ctx.render(429, 'Muitos envios', views.errorPage('Muitos envios em pouco tempo',
+            `Por segurança, há um limite de envios por período. Tente novamente em ${min} ${min === 1 ? 'minuto' : 'minutos'}.`));
         }
       }
 

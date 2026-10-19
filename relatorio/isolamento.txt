@@ -1,0 +1,96 @@
+# Verificação de isolamento: cada teste executado sozinho, em um processo novo
+# (node --test --test-name-pattern="^Txx " arquivo), além da suíte completa em ordem normal,
+# com os arquivos em ordem inversa e com os arquivos em paralelo.
+# Data: 2026-10-19 00:21 UTC | Node v22.22.0 | Linux 6.18.44-fc-v139 | versão 2.0.0 (package.json)
+T01 01-autenticacao.test.js pass=1 fail=0
+T02 01-autenticacao.test.js pass=1 fail=0
+T03 01-autenticacao.test.js pass=1 fail=0
+T04 01-autenticacao.test.js pass=1 fail=0
+T05 01-autenticacao.test.js pass=1 fail=0
+T06 01-autenticacao.test.js pass=1 fail=0
+T07 01-autenticacao.test.js pass=1 fail=0
+T08 01-autenticacao.test.js pass=1 fail=0
+T09 01-autenticacao.test.js pass=1 fail=0
+T10 01-autenticacao.test.js pass=1 fail=0
+T11 01-autenticacao.test.js pass=1 fail=0
+T12 01-autenticacao.test.js pass=1 fail=0
+T13 02-seguranca.test.js pass=1 fail=0
+T14 02-seguranca.test.js pass=1 fail=0
+T15 02-seguranca.test.js pass=1 fail=0
+T16 02-seguranca.test.js pass=1 fail=0
+T17 02-seguranca.test.js pass=1 fail=0
+T18 02-seguranca.test.js pass=1 fail=0
+T19 02-seguranca.test.js pass=1 fail=0
+T20 02-seguranca.test.js pass=1 fail=0
+T21 02-seguranca.test.js pass=1 fail=0
+T22 02-seguranca.test.js pass=1 fail=0
+T23 02-seguranca.test.js pass=1 fail=0
+T73 02-seguranca.test.js pass=1 fail=0
+T24 03-servicos-busca.test.js pass=1 fail=0
+T25 03-servicos-busca.test.js pass=1 fail=0
+T26 03-servicos-busca.test.js pass=1 fail=0
+T27 03-servicos-busca.test.js pass=1 fail=0
+T28 03-servicos-busca.test.js pass=1 fail=0
+T29 03-servicos-busca.test.js pass=1 fail=0
+T30 03-servicos-busca.test.js pass=1 fail=0
+T70 03-servicos-busca.test.js pass=1 fail=0
+T72 03-servicos-busca.test.js pass=1 fail=0
+T31 04-pedidos-avaliacoes.test.js pass=1 fail=0
+T32 04-pedidos-avaliacoes.test.js pass=1 fail=0
+T33 04-pedidos-avaliacoes.test.js pass=1 fail=0
+T34 04-pedidos-avaliacoes.test.js pass=1 fail=0
+T35 04-pedidos-avaliacoes.test.js pass=1 fail=0
+T36 04-pedidos-avaliacoes.test.js pass=1 fail=0
+T37 04-pedidos-avaliacoes.test.js pass=1 fail=0
+T38 04-pedidos-avaliacoes.test.js pass=1 fail=0
+T39 04-pedidos-avaliacoes.test.js pass=1 fail=0
+T65 04-pedidos-avaliacoes.test.js pass=1 fail=0
+T40 05-projetos-propostas.test.js pass=1 fail=0
+T41 05-projetos-propostas.test.js pass=1 fail=0
+T42 05-projetos-propostas.test.js pass=1 fail=0
+T43 05-projetos-propostas.test.js pass=1 fail=0
+T44 05-projetos-propostas.test.js pass=1 fail=0
+T45 05-projetos-propostas.test.js pass=1 fail=0
+T64 05-projetos-propostas.test.js pass=1 fail=0
+T66 05-projetos-propostas.test.js pass=1 fail=0
+T46 06-lgpd-conta.test.js pass=1 fail=0
+T47 06-lgpd-conta.test.js pass=1 fail=0
+T48 06-lgpd-conta.test.js pass=1 fail=0
+T49 06-lgpd-conta.test.js pass=1 fail=0
+T50 07-forca-bruta.test.js pass=1 fail=0
+T51 08-unitarios.test.js pass=1 fail=0
+T52 08-unitarios.test.js pass=1 fail=0
+T53 08-unitarios.test.js pass=1 fail=0
+T54 08-unitarios.test.js pass=1 fail=0
+T55 08-unitarios.test.js pass=1 fail=0
+T56 08-unitarios.test.js pass=1 fail=0
+T57 08-unitarios.test.js pass=1 fail=0
+T67 08-unitarios.test.js pass=1 fail=0
+T68 08-unitarios.test.js pass=1 fail=0
+T58 09-acessibilidade.test.js pass=1 fail=0
+T59 09-acessibilidade.test.js pass=1 fail=0
+T60 10-avaliacao-mutua.test.js pass=1 fail=0
+T61 10-avaliacao-mutua.test.js pass=1 fail=0
+T62 10-avaliacao-mutua.test.js pass=1 fail=0
+T63 10-avaliacao-mutua.test.js pass=1 fail=0
+T69 11-mensagens-migracao.test.js pass=1 fail=0
+T71 11-mensagens-migracao.test.js pass=1 fail=0
+T74 12-perfil-ordenacao-limites.test.js pass=1 fail=0
+T75 12-perfil-ordenacao-limites.test.js pass=1 fail=0
+T76 12-perfil-ordenacao-limites.test.js pass=1 fail=0
+T77 12-perfil-ordenacao-limites.test.js pass=1 fail=0
+T78 13-protecoes-adicionais.test.js pass=1 fail=0
+T79 13-protecoes-adicionais.test.js pass=1 fail=0
+T80 13-protecoes-adicionais.test.js pass=1 fail=0
+T81 13-protecoes-adicionais.test.js pass=1 fail=0
+T82 13-protecoes-adicionais.test.js pass=1 fail=0
+T83 13-protecoes-adicionais.test.js pass=1 fail=0
+T84 13-protecoes-adicionais.test.js pass=1 fail=0
+T85 14-cobertura-complementar.test.js pass=1 fail=0
+T86 14-cobertura-complementar.test.js pass=1 fail=0
+T87 14-cobertura-complementar.test.js pass=1 fail=0
+# Suíte completa, ordem normal:  pass=87 fail=0
+# Suíte completa, ordem inversa: pass=87 fail=0
+# Suíte completa, em paralelo:   pass=87 fail=0
+# Resultado: 87 de 87 testes aprovados quando executados sozinhos
+# Histórico: na primeira verificação (16/10/2026), 9 testes (T32 a T36, T39, T42 a T44) dependiam de dados criados por testes anteriores do mesmo arquivo e foram reescritos para preparar os próprios dados.

@@ -7,7 +7,6 @@ const { startServer, Browser } = require('./helpers');
 let app;
 let cliente;
 let freela;
-let pedido;
 
 before(async () => {
   app = await startServer();
@@ -18,10 +17,24 @@ before(async () => {
 });
 after(async () => { await app.close(); });
 
+// Cada teste prepara o próprio pedido, para poder ser executado sozinho e em
+// qualquer ordem (verificação de isolamento).
+async function contratar() {
+  const r = await cliente.post('/servicos/1/contratar', { requirements: 'Logotipo para clínica odontológica, tons de azul-claro e branco.' }, { from: '/servicos/1' });
+  return r.location;
+}
+async function concluido() {
+  const p = await contratar();
+  await freela.post(p + '/aceitar', {}, { from: p });
+  await freela.post(p + '/entregar', { note: 'Arquivos finais enviados no link combinado.' }, { from: p });
+  await cliente.post(p + '/aprovar', {}, { from: p });
+  return p;
+}
+
 test('T31 — Cliente contrata um serviço: o pedido é criado como "solicitado" e o freelancer é notificado', async () => {
   const r = await cliente.post('/servicos/1/contratar', { requirements: 'Logotipo para clínica odontológica, tons de azul-claro e branco.' }, { from: '/servicos/1' });
   assert.equal(r.status, 302);
-  pedido = r.location;
+  const pedido = r.location;
   assert.match(pedido, /^\/pedidos\/\d+$/);
   const p = await cliente.get(pedido);
   assert.match(p.body, /Aguardando resposta do freelancer/);
@@ -31,6 +44,7 @@ test('T31 — Cliente contrata um serviço: o pedido é criado como "solicitado"
 });
 
 test('T32 — Ações fora de ordem ou do papel errado são bloqueadas', async () => {
+  const pedido = await contratar();
   const clienteAceita = await cliente.post(pedido + '/aceitar', {}, { from: pedido });
   assert.equal(clienteAceita.status, 403, 'aceitar é ação do freelancer');
   const freelaAprova = await freela.post(pedido + '/aprovar', {}, { from: pedido });
@@ -40,6 +54,7 @@ test('T32 — Ações fora de ordem ou do papel errado são bloqueadas', async (
 });
 
 test('T33 — Fluxo completo: aceitar, entregar, pedir ajuste, entregar de novo e aprovar', async () => {
+  const pedido = await contratar();
   assert.equal((await freela.post(pedido + '/aceitar', {}, { from: pedido })).status, 302);
   assert.match((await freela.get(pedido)).body, /Em andamento/);
 
@@ -58,12 +73,20 @@ test('T33 — Fluxo completo: aceitar, entregar, pedir ajuste, entregar de novo 
 });
 
 test('T34 — Transição inválida é recusada (aprovar um pedido já concluído)', async () => {
+  const pedido = await concluido();
   const r = await cliente.post(pedido + '/aprovar', {}, { from: pedido });
   assert.equal(r.status, 409);
   assert.match(r.body, /não está disponível na situação atual/);
+  // a própria função de transição recusa a mudança se a situação de origem não confere,
+  // o que protege contra duas ações simultâneas sobre o mesmo pedido
+  const repo = require('../lib/repo');
+  const id = Number(pedido.split('/').pop());
+  assert.equal(repo.transitionOrder(id, ['entregue'], 'em_andamento', null, 'revisao', 'teste'), false);
+  assert.equal(repo.orders.byId.get(id).status, 'concluido');
 });
 
 test('T35 — Avaliação do freelancer: só pelo cliente, só após a conclusão, uma vez; o freelancer responde publicamente', async () => {
+  const pedido = await concluido();
   const naoCliente = await freela.post(pedido + '/avaliar', { rating: '5', comment: 'Autoavaliação indevida.' }, { from: pedido });
   assert.equal(naoCliente.status, 403);
   const semNota = await cliente.post(pedido + '/avaliar', { comment: 'Muito bom trabalho, recomendo.' }, { from: pedido });
@@ -82,11 +105,24 @@ test('T35 — Avaliação do freelancer: só pelo cliente, só após a conclusã
 });
 
 test('T36 — Reputação: média de avaliações e pedidos concluídos aparecem no perfil e nos cartões', async () => {
+  const contar = async () => {
+    const perfil = (await new Browser(app.base).get('/freelancers/1')).body;
+    return {
+      avaliacoes: Number(perfil.match(/com base em (\d+) avaliaç/)[1]),
+      concluidos: Number(perfil.match(/<dt>Pedidos concluídos<\/dt><dd>(\d+)<\/dd>/)[1]),
+    };
+  };
+  const antes = await contar();
+  const pedido = await concluido();
+  await cliente.post(pedido + '/avaliar', { rating: '5', comment: 'Trabalho excelente e muito bem explicado.' }, { from: pedido });
+  await freela.post(pedido + '/avaliar-cliente', { rating: '5', comment: 'Cliente clara e pontual nos retornos.' }, { from: pedido });
+  const depois = await contar();
+  assert.equal(depois.avaliacoes, antes.avaliacoes + 1, 'uma avaliação a mais no perfil');
+  assert.equal(depois.concluidos, antes.concluidos + 1, 'um pedido concluído a mais');
   const perfil = await new Browser(app.base).get('/freelancers/1');
-  assert.match(perfil.body, /Nota 5 de 5, com base em 2 avaliações/);
-  assert.match(perfil.body, /<dt>Pedidos concluídos<\/dt><dd>2<\/dd>/);
+  assert.match(perfil.body, new RegExp(`Nota [\\d,]+ de 5, com base em ${depois.avaliacoes} avaliações`));
   const busca = await new Browser(app.base).get('/servicos?q=identidade');
-  assert.match(busca.body, /com base em 2 avaliações/);
+  assert.match(busca.body, /com base em \d+ avaliaç/);
 });
 
 test('T37 — Serviço "a combinar": o freelancer precisa informar o valor para aceitar', async () => {
@@ -115,6 +151,7 @@ test('T38 — Cancelamento exige motivo e fica registrado no histórico', async 
 });
 
 test('T39 — Conversa do pedido é compartilhada apenas entre as duas partes', async () => {
+  const pedido = await contratar();
   assert.equal((await cliente.post(pedido + '/mensagem', { content: 'Recebi os arquivos, obrigada!' }, { from: pedido })).status, 302);
   assert.match((await freela.get(pedido)).body, /Recebi os arquivos, obrigada!/);
   const terceiro = new Browser(app.base);

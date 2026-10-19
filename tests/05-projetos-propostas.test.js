@@ -6,7 +6,6 @@ const { startServer, Browser } = require('./helpers');
 
 let app;
 let cliente;
-let projeto;
 
 before(async () => {
   app = await startServer();
@@ -14,6 +13,22 @@ before(async () => {
   await cliente.login('bruno@example.com');
 });
 after(async () => { await app.close(); });
+
+// Cria um projeto do cliente com propostas de Rafael (750) e de Marina (980),
+// para que cada teste possa ser executado sozinho e em qualquer ordem.
+async function projetoComPropostas(titulo) {
+  const r = await cliente.post('/projetos/novo', {
+    title: titulo, category: 'Programação',
+    description: 'Site com páginas de serviços, equipe e contato, com botão para WhatsApp.', budget_min: '500', budget_max: '1000', deadline_days: '15',
+  }, { from: '/projetos/novo' });
+  const rafael = new Browser(app.base);
+  await rafael.login('rafael@example.com');
+  await rafael.post(r.location + '/propostas', proposta(), { from: r.location });
+  const marina = new Browser(app.base);
+  await marina.login('marina@example.com');
+  await marina.post(r.location + '/propostas', proposta({ price: '980', message: 'Layout exclusivo alinhado à identidade visual que criei para o escritório.' }), { from: r.location });
+  return r.location;
+}
 
 const proposta = (extra = {}) => ({ price: '750', delivery_days: '8', message: 'Faço o site em 8 dias, com layout responsivo e formulário de contato integrado.', ...extra });
 
@@ -23,7 +38,7 @@ test('T40 — Cliente publica projeto com orçamento e prazo', async () => {
     description: 'Site com páginas de serviços, equipe e contato, com botão para WhatsApp.', budget_min: '500', budget_max: '1000', deadline_days: '15',
   }, { from: '/projetos/novo' });
   assert.equal(r.status, 302);
-  projeto = r.location;
+  const projeto = r.location;
   const page = await new Browser(app.base).get(projeto);
   assert.match(page.body, /Recebendo propostas/);
   assert.match(page.body, /R\$\s?500,00 a R\$\s?1\.000,00/);
@@ -38,6 +53,10 @@ test('T41 — Validação do projeto (orçamento mínimo maior que o máximo)', 
 });
 
 test('T42 — Freelancers enviam propostas; proposta duplicada é recusada', async () => {
+  const projeto = (await cliente.post('/projetos/novo', {
+    title: 'Site institucional com contato', category: 'Programação',
+    description: 'Site com páginas de serviços, equipe e contato, com botão para WhatsApp.', budget_min: '500', budget_max: '1000', deadline_days: '15',
+  }, { from: '/projetos/novo' })).location;
   const rafael = new Browser(app.base);
   await rafael.login('rafael@example.com');
   assert.equal((await rafael.post(projeto + '/propostas', proposta(), { from: projeto })).status, 302);
@@ -56,6 +75,7 @@ test('T42 — Freelancers enviam propostas; proposta duplicada é recusada', asy
 });
 
 test('T43 — Somente o autor do projeto pode aceitar uma proposta', async () => {
+  const projeto = await projetoComPropostas('Site para escritório: decisão sobre propostas');
   const page = await cliente.get(projeto);
   const ids = [...page.body.matchAll(/action="\/propostas\/(\d+)\/aceitar"/g)].map((m) => m[1]);
   const ana = new Browser(app.base);
@@ -67,6 +87,7 @@ test('T43 — Somente o autor do projeto pode aceitar uma proposta', async () =>
 });
 
 test('T44 — Aceitar proposta cria o pedido, recusa as demais e fecha o projeto para novas propostas', async () => {
+  const projeto = await projetoComPropostas('Site para escritório: aceite de proposta');
   const page = await cliente.get(projeto);
   const primeira = page.body.match(/action="\/propostas\/(\d+)\/aceitar"/)[1];
   const r = await cliente.post(`/propostas/${primeira}/aceitar`, {}, { from: projeto });

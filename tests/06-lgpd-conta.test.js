@@ -28,10 +28,10 @@ test('T47 — Alterar a senha exige a senha atual e encerra as outras sessões',
   await outra.login('rafael@example.com');
   const b = new Browser(app.base);
   await b.login('rafael@example.com');
-  const errada = await b.post('/conta/senha', { current: 'errada123', password: 'novaSenha1', password_confirm: 'novaSenha1' }, { from: '/conta' });
+  const errada = await b.post('/conta/senha', { current: 'errada123', password: 'troquei minha senha hoje', password_confirm: 'troquei minha senha hoje' }, { from: '/conta' });
   assert.equal(errada.status, 400);
   assert.match(errada.body, /senha atual está incorreta/);
-  assert.equal((await b.post('/conta/senha', { current: 'nexo2026', password: 'novaSenha1', password_confirm: 'novaSenha1' }, { from: '/conta' })).status, 302);
+  assert.equal((await b.post('/conta/senha', { current: 'nexo2026', password: 'troquei minha senha hoje', password_confirm: 'troquei minha senha hoje' }, { from: '/conta' })).status, 302);
   assert.equal((await b.get('/perfil')).status, 200, 'a sessão atual continua');
   assert.equal((await outra.get('/perfil')).status, 302, 'a outra sessão foi encerrada');
 });

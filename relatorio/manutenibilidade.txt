@@ -1,0 +1,68 @@
+# Métricas de manutenibilidade (node scripts/manutenibilidade.js)
+# Data: 2026-10-19 00:21 UTC | Node v22.22.0 | Linux 6.18.44-fc-v139 | versão 2.0.0 (package.json)
+# Arquivos medidos: server.js, public/app.js, lib/, routes/ e views/ (32 módulos)
+
+módulo                     linhas  funções  importa  importado por  maior complexidade
+server.js                     207       16        8              0                  41
+public/app.js                  13        2        0              0                   6
+lib/auth.js                    56        4        0              3                  17
+lib/config.js                  37        0        0             15                   0
+lib/db.js                     239        2        1              2                   2
+lib/http-helpers.js           118       12        0              2                  18
+lib/images.js                 120        4        1              1                  23
+lib/mailer.js                  16        1        1              1                   2
+lib/repo.js                   356       19        2              9                   8
+lib/security.js               189       18        1              3                  14
+lib/seed.js                   165        4        3              1                  15
+lib/session.js                 43        6        1              3                   5
+routes/account.js              50        4        5              1                   4
+routes/auth.js                133       11        8              1                  11
+routes/index.js                11        0        8              1                   0
+routes/messages.js             37        4        3              1                   4
+routes/orders.js              162       11        3              1                  15
+routes/profile.js             114        8        4              1                  13
+routes/projects.js            163       14        4              1                  18
+routes/public.js               92        4        4              1                  13
+routes/services.js            115       11        3              1                  11
+routes/util.js                 45        7        4              7                   3
+views/account.js              111        3        2              1                  10
+views/auth.js                  91        5        1              1                   5
+views/freelancer.js           102        3        1              1                  10
+views/helpers.js              155       18        1              9                   7
+views/index.js                 12        0        9             10                   0
+views/layout.js                86        2        1              1                   9
+views/messages.js              45        4        2              1                   5
+views/orders.js               230       13        3              1                  23
+views/projects.js             178        7        1              1                  25
+views/public.js               314       12        1              4                  12
+
+Linhas de código (sem linhas em branco e comentários): 3805
+Dependências circulares entre módulos: nenhuma
+Violações da organização em camadas: nenhuma
+Funções: 229 | complexidade ciclomática: mediana 3, percentil 90 11, máxima 41
+Distribuição: 1-5: 180 | 6-10: 26 | 11-20: 19 | acima de 20: 4
+Funções acima do limite de 10 (23, 10.0% do total):
+   41  server.js:109  (anônima)
+   25  views/projects.js:108  projectDetailPage
+   23  lib/images.js:57  sanitizeJpeg
+   23  views/orders.js:158  reviewSection
+   20  lib/images.js:95  sanitizeWebp
+   18  lib/http-helpers.js:80  parseMultipartFormData
+   18  routes/projects.js:29  create
+   17  lib/auth.js:48  passwordProblems
+   17  views/orders.js:80  actionsFor
+   15  lib/seed.js:97  order
+   15  routes/orders.js:52  (anônima)
+   15  routes/orders.js:109  (anônima)
+   14  lib/security.js:182  detectImageType
+   14  routes/projects.js:79  propose
+   13  routes/profile.js:24  edit
+   13  routes/public.js:23  search
+   12  views/projects.js:6  projectsPage
+   12  views/public.js:143  serviceDetailPage
+   11  lib/images.js:26  sanitizePng
+   11  routes/auth.js:21  register
+   11  routes/auth.js:46  login
+   11  routes/services.js:7  validateService
+   11  views/public.js:75  servicesPage
+Duplicação: 0 de 3387 linhas significativas (0.0%) em 0 blocos repetidos de 6 linhas

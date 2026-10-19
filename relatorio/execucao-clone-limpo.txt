@@ -1,5 +1,5 @@
 # Execução da suíte em um clone limpo do repositório (git clone), sem npm install
-# Data: 2026-09-29 02:10 UTC | Node v22.22.2 | commit a862c1e
+# Data: 2026-10-19 00:22 UTC | Node v22.22.0 | Linux 6.18.44-fc-v139 | versão 2.0.0 (package.json)
 ls: cannot access 'node_modules': No such file or directory
 ok 1 - T01 — Cadastro com dados válidos cria a conta e inicia a sessão
 ok 2 - T02 — Cadastro com e-mail já utilizado é recusado
@@ -58,7 +58,7 @@ ok 54 - T48 — Exclusão da conta anonimiza os dados, preserva o histórico da 
 ok 55 - T49 — Páginas de política de privacidade e de ajuda estão acessíveis a visitantes
 ok 56 - T50 — Após 5 tentativas de login com senha errada, novas tentativas são bloqueadas (inclusive com a senha certa)
 ok 57 - T51 — hashPassword/verifyPassword: salt aleatório e verificação correta
-ok 58 - T52 — Política de senha
+ok 58 - T52 — Política de senha: 12 a 128 caracteres, frases aceitas, senhas comuns e previsíveis recusadas
 ok 59 - T53 — detectImageType reconhece PNG, JPEG e WEBP pela assinatura e rejeita o resto
 ok 60 - T54 — AttemptLimiter bloqueia após o limite e libera após o tempo de bloqueio
 ok 61 - T55 — safeNext aceita só caminhos internos
@@ -78,12 +78,22 @@ ok 74 - T74 — Edição do perfil: nome, área, biografia, LinkedIn e foto apar
 ok 75 - T75 — Busca ordenada por prazo e por data; projetos abertos buscados por palavra-chave
 ok 76 - T76 — Pergunta sobre um projeto abre conversa privada entre o freelancer e o autor do projeto
 ok 77 - T77 — Leitura das requisições: corpo acima do limite e multipart em página que não recebe arquivos são recusados
-1..77
-# tests 77
+ok 78 - T78 — Login: 5 falhas bloqueiam só a combinação conta + origem; o dono da conta, de outra origem, não fica bloqueado
+ok 79 - T79 — Login pela rede: bloqueio da conta atacada não afeta outra conta na mesma origem; cookie de dispositivo emitido
+ok 80 - T80 — Limite de mensagens: a 31ª mensagem em 10 minutos é recusada com HTTP 429, sem afetar outro usuário
+ok 81 - T81 — Limite de propostas: o 11º envio em uma hora é recusado com HTTP 429
+ok 82 - T82 — Imagens enviadas perdem os metadados (EXIF com GPS, textos do PNG, EXIF do WEBP) e continuam válidas
+ok 83 - T83 — Imagens acima de 4000 px, corrompidas ou além do limite de 24 itens do portfólio são recusadas
+ok 84 - T84 — Exclusão da conta remove do servidor as imagens enviadas e oculta os serviços sem a descrição
+ok 85 - T85 — Mensagem pela página do serviço e pelo perfil chega sempre ao freelancer autor; mensagem vazia é recusada
+ok 86 - T86 — Freelancer edita o próprio serviço; dados inválidos são recusados e o serviço fica inalterado
+ok 87 - T87 — Cliente recusa uma proposta, conversa com outro freelancer e encerra o projeto; terceiros não conseguem
+1..87
+# tests 87
 # suites 0
-# pass 77
+# pass 87
 # fail 0
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 8429.82221
+# duration_ms 6805.682691

@@ -178,6 +178,6 @@ module.exports = [
   { method: 'POST', path: R('cancelar'), auth: 'user', handler: cancel },
   { method: 'POST', path: R('avaliar'), auth: 'cliente', handler: review },
   { method: 'POST', path: R('avaliar-cliente'), auth: 'freelancer', handler: reviewClient },
-  { method: 'POST', path: R('mensagem'), auth: 'user', handler: message },
+  { method: 'POST', path: R('mensagem'), auth: 'user', limit: 'mensagens', handler: message },
   { method: 'POST', path: /^\/avaliacoes\/(\d+)\/responder$/, auth: 'freelancer', handler: reply },
 ];

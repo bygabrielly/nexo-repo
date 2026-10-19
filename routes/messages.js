@@ -40,5 +40,5 @@ async function send(ctx) {
 module.exports = [
   { method: 'GET', path: '/mensagens', auth: 'user', handler: inbox },
   { method: 'GET', path: /^\/mensagens\/(\d+)$/, auth: 'user', handler: thread },
-  { method: 'POST', path: /^\/mensagens\/(\d+)$/, auth: 'user', handler: send },
+  { method: 'POST', path: /^\/mensagens\/(\d+)$/, auth: 'user', limit: 'mensagens', handler: send },
 ];

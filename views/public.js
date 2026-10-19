@@ -295,7 +295,7 @@ function privacyPage() {
   return `
   <article class="prose">
   <h1>Privacidade e Termos de Uso</h1>
-  <p class="muted">Versão 2026-09 · Protótipo acadêmico — não é um serviço comercial.</p>
+  <p class="muted">Versão 2026-10 · Protótipo acadêmico — não é um serviço comercial.</p>
   <h2>1. Quais dados coletamos e para quê</h2>
   <ul>
     <li><strong>Cadastro:</strong> nome, e-mail, senha (armazenada apenas como hash scrypt) e tipo de conta — para identificar você e permitir o acesso.</li>
@@ -305,10 +305,18 @@ function privacyPage() {
   <h2>2. O que fica público</h2>
   <p>Nome, foto, capa, área de atuação, biografia, LinkedIn, portfólio, serviços publicados e avaliações recebidas (no caso de freelancers); projetos publicados, avaliações recebidas de freelancers e número de pedidos concluídos (no caso de clientes). As avaliações só se tornam públicas quando as duas partes avaliam ou quando termina o prazo de 14 dias após a conclusão do pedido. <strong>O e-mail nunca é exibido publicamente</strong>: o contato é feito pelas mensagens do Nexo. Mensagens são visíveis apenas para as duas pessoas da conversa.</p>
   <h2>3. Seus direitos (LGPD, art. 18)</h2>
-  <p>Você pode, a qualquer momento, em <strong>Meu Perfil → Conta e privacidade</strong>: consultar e baixar uma cópia de todos os seus dados (arquivo JSON) e excluir sua conta. Na exclusão, seus dados pessoais são apagados; pedidos e avaliações já realizados permanecem de forma anonimizada, porque também dizem respeito à outra parte.</p>
-  <h2>4. Segurança</h2>
-  <p>Senhas com hash e salt, sessões que expiram, proteção contra tentativas repetidas de login e contra envio de formulários por sites de terceiros (CSRF), verificação do conteúdo real das imagens enviadas e escape de todo conteúdo exibido.</p>
-  <h2>5. Termos de uso</h2>
+  <p>Você pode, a qualquer momento, em <strong>Meu Perfil → Conta e privacidade</strong>: consultar e baixar uma cópia de todos os seus dados (arquivo JSON) e excluir sua conta. Na exclusão:</p>
+  <ul>
+    <li><strong>São apagados:</strong> e-mail, senha, área de atuação, biografia e LinkedIn; as imagens enviadas (foto, capa e portfólio), que são removidas do servidor; os itens de portfólio; os links de recuperação de senha; e todas as sessões abertas.</li>
+    <li><strong>São anonimizados:</strong> o nome, substituído por "Usuário removido" em pedidos, conversas e avaliações; e os serviços publicados, que deixam de ser exibidos e perdem a descrição e as palavras-chave.</li>
+    <li><strong>São mantidos:</strong> pedidos concluídos, avaliações e mensagens já trocadas, sem o seu nome, porque fazem parte do histórico da outra pessoa e podem ser necessários para esclarecer uma divergência (LGPD, art. 7º, VI e IX, e art. 16); e a data e a versão da política aceita no cadastro, como registro do consentimento (art. 8º, § 2º). Projetos e propostas em aberto são encerrados, e pedidos em andamento, cancelados.</li>
+  </ul>
+  <p>Por ser um protótipo acadêmico, o Nexo não define um prazo de retenção para esses registros; em um serviço real, esse prazo seria fixado pelo responsável pela plataforma, de acordo com a finalidade e com eventuais obrigações legais.</p>
+  <h2>4. Cookies</h2>
+  <p>O Nexo usa apenas cookies necessários ao funcionamento e à segurança: <strong>sid</strong> (sessão, enquanto você está conectado), <strong>aid</strong> (proteção dos formulários antes do login) e <strong>dev</strong> (dispositivo conhecido, por 180 dias: indica que você já entrou por este navegador e evita esperas de segurança quando há tentativas de login de outras pessoas na sua conta). Não há cookies de publicidade nem de terceiros.</p>
+  <h2>5. Segurança</h2>
+  <p>Senhas com hash e salt, sessões que expiram, proteção contra tentativas repetidas de login e contra envio de formulários por sites de terceiros (CSRF), limite de envios por período, verificação do conteúdo real das imagens enviadas, com remoção de metadados como a localização da foto, e escape de todo conteúdo exibido.</p>
+  <h2>6. Termos de uso</h2>
   <p>Não publique conteúdo ilícito, ofensivo ou de terceiros sem autorização. O Nexo não processa pagamentos; valores registrados nos pedidos servem apenas como referência do que foi combinado entre as partes.</p>
   </article>`;
 }

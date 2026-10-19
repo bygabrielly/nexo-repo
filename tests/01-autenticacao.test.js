@@ -11,7 +11,7 @@ before(async () => { app = await startServer(); });
 after(async () => { await app.close(); });
 
 const novo = (extra = {}) => ({ name: 'Paula Teste', email: `paula${Date.now()}${Math.random().toString(16).slice(2, 6)}@example.com`,
-  password: 'senha1234', password_confirm: 'senha1234', role: 'cliente', consent: '1', ...extra });
+  password: 'minha senha de teste 2026', password_confirm: 'minha senha de teste 2026', role: 'cliente', consent: '1', ...extra });
 
 test('T01 — Cadastro com dados válidos cria a conta e inicia a sessão', async () => {
   const b = new Browser(app.base);
@@ -32,12 +32,13 @@ test('T02 — Cadastro com e-mail já utilizado é recusado', async () => {
 
 test('T03 — Política de senha e confirmação da senha são exigidas no cadastro', async () => {
   const b = new Browser(app.base);
-  const curta = await b.post('/cadastro', novo({ password: 'abc12', password_confirm: 'abc12' }), { from: '/cadastro' });
+  const curta = await b.post('/cadastro', novo({ password: 'abc12345678', password_confirm: 'abc12345678' }), { from: '/cadastro' });
   assert.equal(curta.status, 400);
-  assert.match(curta.body, /ao menos 8 caracteres/);
-  const semNumero = await b.post('/cadastro', novo({ password: 'somenteletras', password_confirm: 'somenteletras' }), { from: '/cadastro' });
-  assert.match(semNumero.body, /letras e números/);
-  const diferente = await b.post('/cadastro', novo({ password_confirm: 'outra1234' }), { from: '/cadastro' });
+  assert.match(curta.body, /ao menos 12 caracteres/);
+  const comum = await b.post('/cadastro', novo({ password: 'qwerty123456', password_confirm: 'qwerty123456' }), { from: '/cadastro' });
+  assert.equal(comum.status, 400);
+  assert.match(comum.body, /muito comum ou previsível/);
+  const diferente = await b.post('/cadastro', novo({ password_confirm: 'outra senha qualquer' }), { from: '/cadastro' });
   assert.equal(diferente.status, 400);
   assert.match(diferente.body, /confirmação da senha não confere/);
 });
@@ -51,7 +52,7 @@ test('T04 — Cadastro exige aceite da política de privacidade (LGPD) e registr
   assert.equal(com.status, 302);
   const conta = await b.get('/conta');
   assert.match(conta.body, /Consentimento registrado em \d{2}\/\d{2}\/\d{4}/);
-  assert.match(conta.body, /versão 2026-09/);
+  assert.match(conta.body, /versão 2026-10/);
 });
 
 test('T05 — Login com credenciais corretas autentica o usuário', async () => {

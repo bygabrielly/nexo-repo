@@ -1,6 +1,6 @@
 {
   "name": "plataforma-intermediacao-servicos",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Nexo — protótipo de plataforma web para intermediação de serviços entre freelancers e clientes",
   "main": "server.js",
   "type": "commonjs",

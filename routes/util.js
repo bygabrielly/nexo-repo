@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const config = require('../lib/config');
+const { sanitizeImage } = require('../lib/images');
 const { detectImageType } = require('../lib/security');
 
 function str(v, max = 5000) {
@@ -37,9 +38,11 @@ function saveUploadedImage(file) {
   if (file.buffer.length > config.MAX_IMAGE_BYTES) throw new Error('Imagem muito grande. O tamanho máximo é 3 MB.');
   const type = detectImageType(file.buffer);
   if (!type) throw new Error('O arquivo enviado não é uma imagem JPG, PNG ou WEBP válida.');
+  // estrutura validada, metadados (EXIF, XMP...) removidos e dimensões limitadas
+  const clean = sanitizeImage(file.buffer, type.ext);
   fs.mkdirSync(config.UPLOADS_DIR, { recursive: true });
   const filename = `${crypto.randomBytes(12).toString('hex')}${type.ext}`;
-  fs.writeFileSync(path.join(config.UPLOADS_DIR, filename), file.buffer);
+  fs.writeFileSync(path.join(config.UPLOADS_DIR, filename), clean.buffer);
   return `/uploads/${filename}`;
 }
 

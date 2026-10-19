@@ -167,10 +167,10 @@ async function withdraw(ctx) {
 module.exports = [
   { method: 'GET', path: '/projetos', handler: list },
   { method: 'GET', path: '/projetos/novo', auth: 'cliente', handler: newForm },
-  { method: 'POST', path: '/projetos/novo', auth: 'cliente', handler: create },
+  { method: 'POST', path: '/projetos/novo', auth: 'cliente', limit: 'publicacoes', handler: create },
   { method: 'GET', path: /^\/projetos\/(\d+)$/, handler: detail },
-  { method: 'POST', path: /^\/projetos\/(\d+)\/propostas$/, auth: 'freelancer', handler: propose },
-  { method: 'POST', path: /^\/projetos\/(\d+)\/pergunta$/, auth: 'freelancer', handler: question },
+  { method: 'POST', path: /^\/projetos\/(\d+)\/propostas$/, auth: 'freelancer', limit: 'propostas', handler: propose },
+  { method: 'POST', path: /^\/projetos\/(\d+)\/pergunta$/, auth: 'freelancer', limit: 'mensagens', handler: question },
   { method: 'POST', path: /^\/projetos\/(\d+)\/encerrar$/, auth: 'cliente', handler: close },
   { method: 'POST', path: /^\/propostas\/(\d+)\/aceitar$/, auth: 'cliente', handler: acceptProposal },
   { method: 'POST', path: /^\/propostas\/(\d+)\/recusar$/, auth: 'cliente', handler: declineProposal },
