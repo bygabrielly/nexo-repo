@@ -10,7 +10,7 @@ const { chromium } = require('playwright');
 
 const BASE = process.env.BASE_URL || 'http://localhost:3000';
 const OUT = path.join(__dirname, 'screenshots');
-const PASSWORD = 'nexo2026';
+const PASSWORD = 'conta demo 2026';
 
 async function session(browser, email, viewport = { width: 1280, height: 800 }) {
   const ctx = await browser.newContext({ viewport, locale: 'pt-BR' });

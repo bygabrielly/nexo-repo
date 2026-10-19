@@ -34,7 +34,7 @@ const cenario = (nome, fn) => cenarios.push({ nome, fn });
 async function entrar(page, base, email) {
   await page.goto(`${base}/login`);
   await page.fill('#email', email);
-  await page.fill('#password', 'nexo2026');
+  await page.fill('#password', 'conta demo 2026');
   await Promise.all([page.waitForURL((u) => !u.pathname.startsWith('/login')), page.click('main form button[type=submit]')]);
 }
 

@@ -5,7 +5,7 @@
  * freelancers e clientes.
  *
  * Implementado em Node.js puro, apenas com módulos nativos (node:http,
- * node:sqlite, node:crypto, node:fs, node:test): basta ter o Node.js 22.5+
+ * node:sqlite, node:crypto, node:fs, node:test): basta ter o Node.js 22.13+
  * instalado, sem `npm install`.
  *
  * Este arquivo é a camada de aplicação: recebe cada requisição HTTP, aplica
@@ -246,7 +246,7 @@ function start(port = config.PORT) {
   const server = createApp();
   server.listen(port, () => {
     console.log(`Nexo rodando em http://localhost:${server.address().port}`);
-    console.log('Contas de demonstração (senha: nexo2026): marina@example.com, rafael@example.com, juliana@example.com (freelancers); cliente@example.com, bruno@example.com (clientes)');
+    console.log('Contas de demonstração (senha: conta demo 2026): marina@example.com, rafael@example.com, juliana@example.com (freelancers); cliente@example.com, bruno@example.com (clientes)');
   });
   return server;
 }

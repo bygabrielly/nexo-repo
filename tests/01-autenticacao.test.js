@@ -77,13 +77,13 @@ test('T07 — Rota protegida redireciona ao login e, após autenticar, retorna �
   assert.equal(r.status, 302);
   assert.equal(r.location, '/login?next=%2Fservicos%2Fnovo');
   await b.get(r.location);
-  const login = await b.post('/login', { email: 'marina@example.com', password: 'nexo2026', next: '/servicos/novo' }, { csrf: true, from: r.location });
+  const login = await b.post('/login', { email: 'marina@example.com', password: 'conta demo 2026', next: '/servicos/novo' }, { csrf: true, from: r.location });
   assert.equal(login.location, '/servicos/novo');
 });
 
 test('T08 — Redirecionamento após login não aceita endereços externos (open redirect)', async () => {
   const b = new Browser(app.base);
-  const r = await b.post('/login', { email: 'marina@example.com', password: 'nexo2026', next: '//site-malicioso.example/roubo' }, { from: '/login' });
+  const r = await b.post('/login', { email: 'marina@example.com', password: 'conta demo 2026', next: '//site-malicioso.example/roubo' }, { from: '/login' });
   assert.equal(r.status, 302);
   assert.equal(r.location, '/');
 });
@@ -122,7 +122,7 @@ test('T11 — Cookie de sessão emitido com HttpOnly e SameSite=Lax', async () =
   const login = await fetch(app.base + '/login', {
     method: 'POST', redirect: 'manual',
     headers: { 'content-type': 'application/x-www-form-urlencoded', cookie: b.cookieHeader() },
-    body: new URLSearchParams({ email: 'rafael@example.com', password: 'nexo2026', _csrf: csrf }).toString(),
+    body: new URLSearchParams({ email: 'rafael@example.com', password: 'conta demo 2026', _csrf: csrf }).toString(),
   });
   const sid = login.headers.getSetCookie().find((c) => c.startsWith('sid='));
   assert.ok(sid, setCookie);
@@ -143,6 +143,8 @@ test('T12 — Recuperação de senha: link de uso único, que redefine a senha e
   const outbox = path.join(app.dir, 'outbox');
   const mail = fs.readdirSync(outbox).filter((f) => f.includes('juliana')).map((f) => fs.readFileSync(path.join(outbox, f), 'utf8')).pop();
   const token = mail.match(/token=([a-f0-9]{64})/)[1];
+  await b.login('bruno@example.com'); // outra pessoa conectada neste navegador abre o link
+  const sidAnterior = b.cookies.sid;
   await b.get(`/redefinir-senha?token=${token}`);
   const ok = await b.post('/redefinir-senha', { token, password: 'novaSenha2026', password_confirm: 'novaSenha2026' }, { csrf: true, from: `/redefinir-senha?token=${token}` });
   assert.equal(ok.status, 302);
@@ -150,5 +152,8 @@ test('T12 — Recuperação de senha: link de uso único, que redefine a senha e
   assert.match(reuso.body, /Link inválido ou expirado/);
   const sessaoAntiga = await antiga.get('/perfil');
   assert.equal(sessaoAntiga.status, 302, 'sessão aberta com a senha antiga foi encerrada');
+  const anterior = new Browser(app.base);
+  anterior.cookies.sid = sidAnterior;
+  assert.equal((await anterior.get('/perfil')).status, 302, 'identificador de sessão anterior descartado ao entrar pelo link');
   await new Browser(app.base).login('juliana@example.com', 'novaSenha2026');
 });

@@ -2,6 +2,7 @@
 
 const { test, before, after } = require('node:test');
 const assert = require('node:assert/strict');
+const path = require('node:path');
 const { startServer, Browser } = require('./helpers');
 
 let app;
@@ -31,20 +32,20 @@ test('T47 — Alterar a senha exige a senha atual e encerra as outras sessões',
   const errada = await b.post('/conta/senha', { current: 'errada123', password: 'troquei minha senha hoje', password_confirm: 'troquei minha senha hoje' }, { from: '/conta' });
   assert.equal(errada.status, 400);
   assert.match(errada.body, /senha atual está incorreta/);
-  assert.equal((await b.post('/conta/senha', { current: 'nexo2026', password: 'troquei minha senha hoje', password_confirm: 'troquei minha senha hoje' }, { from: '/conta' })).status, 302);
+  assert.equal((await b.post('/conta/senha', { current: 'conta demo 2026', password: 'troquei minha senha hoje', password_confirm: 'troquei minha senha hoje' }, { from: '/conta' })).status, 302);
   assert.equal((await b.get('/perfil')).status, 200, 'a sessão atual continua');
   assert.equal((await outra.get('/perfil')).status, 302, 'a outra sessão foi encerrada');
 });
 
-test('T48 — Exclusão da conta anonimiza os dados, preserva o histórico da outra parte e impede novo login', async () => {
+test('T48 — Exclusão da conta apaga os dados pessoais e o nome, preserva o histórico da outra parte, cancela pedidos em aberto com registro e impede novo login', async () => {
   const b = new Browser(app.base);
   await b.login('bruno@example.com');
   const semSenha = await b.post('/conta/excluir', { password: 'errada' }, { from: '/conta' });
   assert.equal(semSenha.status, 400);
-  const r = await b.post('/conta/excluir', { password: 'nexo2026' }, { from: '/conta' });
+  const r = await b.post('/conta/excluir', { password: 'conta demo 2026' }, { from: '/conta' });
   assert.equal(r.status, 200);
   assert.match(r.body, /Conta excluída/);
-  const login = await new Browser(app.base).post('/login', { email: 'bruno@example.com', password: 'nexo2026' }, { from: '/login' });
+  const login = await new Browser(app.base).post('/login', { email: 'bruno@example.com', password: 'conta demo 2026' }, { from: '/login' });
   assert.equal(login.status, 400);
   const marina = new Browser(app.base);
   await marina.login('marina@example.com');
@@ -52,8 +53,16 @@ test('T48 — Exclusão da conta anonimiza os dados, preserva o histórico da ou
   assert.equal(pedido.status, 200);
   assert.match(pedido.body, /Usuário removido/);
   assert.doesNotMatch(pedido.body, /Bruno Costa/);
+  // o pedido entregue de Bruno com Rafael (n.º 6) é cancelado, com o motivo no histórico
+  const { DatabaseSync } = require('node:sqlite');
+  const db = new DatabaseSync(path.join(app.dir, 'test.sqlite'), { readOnly: true });
+  const pedido6 = db.prepare('SELECT status FROM orders WHERE id = 6').get();
+  const evento = db.prepare("SELECT note FROM order_events WHERE order_id = 6 AND event = 'cancelado'").get();
+  db.close();
+  assert.equal(pedido6.status, 'cancelado');
+  assert.match(evento.note, /Conta excluída pelo usuário/, 'cancelamento registrado no histórico da outra parte');
   const perfil = await new Browser(app.base).get('/freelancers/1');
-  assert.match(perfil.body, /Excelente profissional/, 'a avaliação continua visível, anonimizada');
+  assert.match(perfil.body, /Excelente profissional/, 'a avaliação continua visível, sem o nome do autor');
 });
 
 test('T49 — Páginas de política de privacidade e de ajuda estão acessíveis a visitantes', async () => {

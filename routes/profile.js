@@ -3,7 +3,7 @@
 const config = require('../lib/config');
 const repo = require('../lib/repo');
 const views = require('../views');
-const { str, id, saveUploadedImage, notFound, forbidden } = require('./util');
+const { str, id, saveUploadedImage, removeUploadedImage, notFound, forbidden } = require('./util');
 
 async function profile(ctx) {
   const u = ctx.user;
@@ -33,19 +33,25 @@ async function edit(ctx) {
   if (linkedin && !/^https?:\/\/[^\s]+$/i.test(linkedin)) errors.push('O link do LinkedIn deve começar com http:// ou https://.');
   let avatarUrl = u.avatar_url || '';
   let coverUrl = u.cover_url || '';
+  const novos = [];
   for (const [field, label] of [['avatar', 'Foto de perfil'], ['cover', 'Foto de capa']]) {
     if (!ctx.files[field]) continue;
     try {
       const saved = saveUploadedImage(ctx.files[field]);
+      novos.push(saved);
       if (field === 'avatar') avatarUrl = saved; else coverUrl = saved;
     } catch (err) {
       errors.push(`${label}: ${err.message}`);
     }
   }
   if (errors.length) {
+    novos.forEach(removeUploadedImage); // nada é gravado se o formulário for recusado
     return ctx.render(400, 'Editar Perfil', views.editProfilePage({ user: { ...u, name, area, bio, linkedin_url: linkedin }, errors }), 'perfil');
   }
   repo.users.updateProfile.run(name, area, bio, avatarUrl, coverUrl, linkedin, u.id);
+  // a foto e a capa substituídas são apagadas do disco
+  if (u.avatar_url && u.avatar_url !== avatarUrl) removeUploadedImage(u.avatar_url);
+  if (u.cover_url && u.cover_url !== coverUrl) removeUploadedImage(u.cover_url);
   ctx.setFlash('Perfil atualizado com sucesso.', 'success');
   return ctx.redirect('/perfil');
 }

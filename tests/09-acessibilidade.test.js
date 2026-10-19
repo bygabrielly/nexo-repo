@@ -42,7 +42,7 @@ function checkPage(html, url) {
   return null;
 }
 
-test('T58 — Acessibilidade estrutural (WCAG 1.1.1, 1.3.1, 2.4.1, 3.1.1, 4.1.2) em 38 páginas, para os três perfis de acesso', async () => {
+test('T58 — Acessibilidade estrutural (WCAG 1.1.1, 1.3.1, 2.4.1, 3.1.1, 4.1.2) em 38 páginas (30 endereços distintos), para os três perfis de acesso', async () => {
   const failures = [];
   let checked = 0;
   for (const [who, urls] of Object.entries(PAGES)) {

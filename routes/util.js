@@ -46,6 +46,13 @@ function saveUploadedImage(file) {
   return `/uploads/${filename}`;
 }
 
+// Apaga do disco uma imagem enviada (usada ao substituir a foto ou a capa e
+// quando o restante do formulário é recusado), evitando arquivos órfãos.
+function removeUploadedImage(url) {
+  if (typeof url !== 'string' || !url.startsWith('/uploads/')) return;
+  fs.rmSync(path.join(config.UPLOADS_DIR, path.basename(url)), { force: true });
+}
+
 function notFound(ctx) {
   const views = require('../views');
   return ctx.render(404, 'Não encontrado', views.notFoundPage());
@@ -56,4 +63,4 @@ function forbidden(ctx, message = 'Você não tem permissão para acessar este c
   return ctx.render(403, 'Acesso negado', views.errorPage('Acesso negado', message));
 }
 
-module.exports = { str, money, int, id, saveUploadedImage, notFound, forbidden };
+module.exports = { str, money, int, id, saveUploadedImage, removeUploadedImage, notFound, forbidden };

@@ -1,5 +1,5 @@
 # Execução da suíte em um clone limpo do repositório (git clone), sem npm install
-# Data: 2026-10-19 00:22 UTC | Node v22.22.0 | Linux 6.18.44-fc-v139 | versão 2.0.0 (package.json)
+# Data: 2026-10-19 01:28 UTC | Node v22.22.0 | Linux 6.18.44-fc-v139 | versão 2.0.1 (package.json)
 ls: cannot access 'node_modules': No such file or directory
 ok 1 - T01 — Cadastro com dados válidos cria a conta e inicia a sessão
 ok 2 - T02 — Cadastro com e-mail já utilizado é recusado
@@ -54,7 +54,7 @@ ok 50 - T64 — Freelancer que retirou a proposta pode enviar uma nova, com os d
 ok 51 - T66 — Projetos abertos filtrados por orçamento e ordenados por maior orçamento ou menos propostas
 ok 52 - T46 — Exportação dos dados do titular em JSON (LGPD, art. 18), sem dados de terceiros
 ok 53 - T47 — Alterar a senha exige a senha atual e encerra as outras sessões
-ok 54 - T48 — Exclusão da conta anonimiza os dados, preserva o histórico da outra parte e impede novo login
+ok 54 - T48 — Exclusão da conta apaga os dados pessoais e o nome, preserva o histórico da outra parte, cancela pedidos em aberto com registro e impede novo login
 ok 55 - T49 — Páginas de política de privacidade e de ajuda estão acessíveis a visitantes
 ok 56 - T50 — Após 5 tentativas de login com senha errada, novas tentativas são bloqueadas (inclusive com a senha certa)
 ok 57 - T51 — hashPassword/verifyPassword: salt aleatório e verificação correta
@@ -66,7 +66,7 @@ ok 62 - T56 — escapeHtml neutraliza os caracteres especiais de HTML
 ok 63 - T57 — Token anti-CSRF é vinculado à sessão
 ok 64 - T67 — Sessão expira após 2 h sem uso e 12 h após o login, mesmo se usada continuamente
 ok 65 - T68 — Cookie de sessão recebe o atributo Secure quando o sistema é servido por HTTPS
-ok 66 - T58 — Acessibilidade estrutural (WCAG 1.1.1, 1.3.1, 2.4.1, 3.1.1, 4.1.2) em 38 páginas, para os três perfis de acesso
+ok 66 - T58 — Acessibilidade estrutural (WCAG 1.1.1, 1.3.1, 2.4.1, 3.1.1, 4.1.2) em 38 páginas (30 endereços distintos), para os três perfis de acesso
 ok 67 - T59 — Contraste mínimo de 4,5:1 (WCAG 1.4.3, nível AA) em todos os pares de cor de texto da interface
 ok 68 - T60 — Avaliação mútua às cegas: nenhuma nota é exibida até que as duas partes avaliem
 ok 69 - T61 — Prazo de 14 dias: avaliações pendentes são publicadas ao fim do prazo e novas avaliações são recusadas
@@ -74,14 +74,14 @@ ok 70 - T62 — Conclusão automática: entrega sem resposta do cliente por 3 di
 ok 71 - T63 — Reputação do cliente: nota, pedidos concluídos e comentários visíveis no projeto e no pedido
 ok 72 - T69 — Mensagens não lidas: contador no menu, marcação como lida ao abrir e novo aviso a cada mensagem
 ok 73 - T71 — Migração: mensagens de um banco da primeira versão viram conversas privadas por cliente
-ok 74 - T74 — Edição do perfil: nome, área, biografia, LinkedIn e foto aparecem no perfil público; LinkedIn inválido é recusado
+ok 74 - T74 — Edição do perfil: dados e foto aparecem no perfil público; LinkedIn inválido é recusado sem gravar imagem; a foto substituída é apagada
 ok 75 - T75 — Busca ordenada por prazo e por data; projetos abertos buscados por palavra-chave
 ok 76 - T76 — Pergunta sobre um projeto abre conversa privada entre o freelancer e o autor do projeto
 ok 77 - T77 — Leitura das requisições: corpo acima do limite e multipart em página que não recebe arquivos são recusados
 ok 78 - T78 — Login: 5 falhas bloqueiam só a combinação conta + origem; o dono da conta, de outra origem, não fica bloqueado
 ok 79 - T79 — Login pela rede: bloqueio da conta atacada não afeta outra conta na mesma origem; cookie de dispositivo emitido
 ok 80 - T80 — Limite de mensagens: a 31ª mensagem em 10 minutos é recusada com HTTP 429, sem afetar outro usuário
-ok 81 - T81 — Limite de propostas: o 11º envio em uma hora é recusado com HTTP 429
+ok 81 - T81 — Limites de propostas e de publicações: o 11º envio em uma hora é recusado com HTTP 429
 ok 82 - T82 — Imagens enviadas perdem os metadados (EXIF com GPS, textos do PNG, EXIF do WEBP) e continuam válidas
 ok 83 - T83 — Imagens acima de 4000 px, corrompidas ou além do limite de 24 itens do portfólio são recusadas
 ok 84 - T84 — Exclusão da conta remove do servidor as imagens enviadas e oculta os serviços sem a descrição
@@ -96,4 +96,4 @@ ok 87 - T87 — Cliente recusa uma proposta, conversa com outro freelancer e enc
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 6805.682691
+# duration_ms 10487.534279

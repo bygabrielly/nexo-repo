@@ -84,7 +84,7 @@ class Browser {
     return { status: res.status, headers: res.headers, body: text, location: res.headers.get('location') };
   }
 
-  async login(email, password = 'nexo2026') {
+  async login(email, password = 'conta demo 2026') {
     const r = await this.post('/login', { email, password }, { from: '/login' });
     if (r.status !== 302) throw new Error(`login falhou para ${email}: ${r.status}`);
     return r;

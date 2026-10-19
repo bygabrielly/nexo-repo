@@ -1,6 +1,6 @@
 # Teste de mutação manual dos módulos críticos (node scripts/mutacao.js)
 # Cada mutante introduz um defeito plausível; 'morto' = ao menos um teste falhou; entre parênteses, os testes que o detectaram.
-# Data: 2026-10-19 00:15 UTC | Node v22.22.0 | Linux 6.18.44-fc-v139 | versão 2.0.0 (package.json) | suíte com 87 testes
+# Data: 2026-10-19 01:21 UTC | Node v22.22.0 | Linux 6.18.44-fc-v139 | versão 2.0.1 (package.json) | suíte com 87 testes
 
 M01 morto      lib/security.js      CSRF: token de tamanho errado passa a ser aceito (T13, T57)
 M02 morto      lib/security.js      CSRF: qualquer token de 64 caracteres é aceito (T14, T57)
@@ -24,7 +24,7 @@ M19 morto      lib/auth.js          Política de senha: mínimo volta a 8 caract
 M20 morto      lib/auth.js          Política de senha: lista de senhas comuns ignorada (T52)
 M21 morto      lib/http-helpers.js  XSS: o caractere < deixa de ser escapado (T17, T56)
 M22 morto      lib/session.js       Sessão: expiração absoluta de 12 h removida (T67)
-M23 sobreviveu lib/session.js       Sessão: identificador anterior não é descartado no login
+M23 morto      lib/session.js       Sessão: identificador anterior não é descartado no login (T12)
 M24 morto      lib/images.js        Upload: checksum do PNG não é verificado (T83)
 M25 morto      lib/images.js        Upload: textos do PNG não são removidos (T82)
 M26 morto      lib/images.js        Upload: EXIF do JPEG não é removido (T82)
@@ -33,13 +33,15 @@ M28 morto      routes/account.js    LGPD: imagens não são apagadas na exclusã
 M29 morto      lib/repo.js          Avaliação mútua: publicada com apenas uma das avaliações (T60, T61)
 M30 morto      lib/security.js      Cabeçalhos: política de conteúdo passa a permitir scripts embutidos (T18)
 
-Mutantes mortos: 28 de 30 (escore de mutação: 93.3%)
+Mutantes mortos: 29 de 30 (escore de mutação: 96.7%)
 
-Os 2 sobreviventes são mutantes equivalentes no protótipo — o defeito não é observável porque outra camada já o impede:
+O sobrevivente é um mutante equivalente no protótipo — o defeito não é observável porque outra camada já o impede:
 - M11: o analisador de URL do Node.js (WHATWG) normaliza '..', '%2e%2e' e '\\' antes de o caminho chegar ao servidor de arquivos estáticos; a verificação removida é defesa em profundidade.
-- M23: o login só ocorre sem sessão anterior (rotas exclusivas de visitantes), e a redefinição de senha encerra todas as sessões do usuário antes de criar a nova.
-Escore sobre os mutantes não equivalentes: 28 de 28 (100%).
+Escore sobre os mutantes não equivalentes: 29 de 29 (100%).
 
-Histórico: na primeira execução (16/10/2026), 24 de 30 mutantes foram mortos (80,0%). Os sobreviventes M09, M17, M20 e M24 revelaram
-verificações ausentes na suíte (assinatura PNG com o primeiro byte alterado, guarda de situação na função de transição do pedido,
-senha presente apenas na lista de senhas comuns e PNG com checksum adulterado), e os testes T53, T34, T52 e T83 foram reforçados.
+Histórico:
+- Primeira execução (16/10/2026): 24 de 30 mutantes mortos (80,0%). Os sobreviventes M09, M17, M20 e M24 revelaram verificações
+  ausentes na suíte (assinatura PNG com o primeiro byte alterado, guarda de situação na função de transição do pedido, senha presente
+  apenas na lista de senhas comuns e PNG com checksum adulterado), e os testes T53, T34, T52 e T83 foram reforçados.
+- Revisão (19/10/2026): M23, antes classificado como equivalente, mostrou-se observável quando outra pessoa está conectada no
+  navegador que abre o link de redefinição de senha (a rota não é exclusiva de visitantes); o teste T12 foi reforçado e passou a matá-lo.

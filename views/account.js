@@ -106,7 +106,7 @@ function accountPage({ user, errors }) {
   </section>
   <section class="form-card form-card-wide form-card-left danger-zone" aria-labelledby="excluir-t">
     <h2 id="excluir-t">Excluir minha conta</h2>
-    <p>Seus dados pessoais serão apagados e você não poderá mais entrar. Pedidos e avaliações já realizados permanecem de forma anonimizada,
+    <p>Seus dados pessoais serão apagados e você não poderá mais entrar. Pedidos, avaliações e mensagens já realizados permanecem sem o seu nome,
       pois também dizem respeito à outra parte. Pedidos em aberto serão cancelados.</p>
     <form method="POST" action="/conta/excluir" class="stacked-form" data-confirm="Excluir sua conta definitivamente? Esta ação não pode ser desfeita.">
       <label for="confirm_password">Digite sua senha para confirmar</label>

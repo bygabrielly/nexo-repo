@@ -58,7 +58,7 @@ async function medir(base, rota, headers = {}) {
   const r = await fetch(base + '/login', {
     method: 'POST', redirect: 'manual',
     headers: { 'content-type': 'application/x-www-form-urlencoded', cookie: aid },
-    body: new URLSearchParams({ _csrf: csrf, email: 'cliente@example.com', password: 'nexo2026' }).toString(),
+    body: new URLSearchParams({ _csrf: csrf, email: 'cliente@example.com', password: 'conta demo 2026' }).toString(),
   });
   const sid = r.headers.getSetCookie().find((c) => c.startsWith('sid=')).split(';')[0];
 

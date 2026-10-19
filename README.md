@@ -12,7 +12,7 @@ As páginas não carregam nada de serviços externos: a fonte dos títulos (Popp
 
 ## Requisitos
 
-- Node.js 22.5 ou superior (usa o módulo `node:sqlite`)
+- Node.js 22.13 ou superior (usa o módulo `node:sqlite`, disponível sem opções adicionais a partir dessa versão)
 - Versões em que a suíte foi executada: Node.js 22.22.2 (SQLite 3.51.2) e Node.js 22.22.0 (SQLite 3.50.4), em Linux, e também em Windows (`relatorio/execucao-windows.txt`); os demais registros da pasta `relatorio/` são da versão 22.22.0, em Linux
 
 ## Como executar
@@ -32,7 +32,7 @@ automaticamente** (novas tabelas e colunas; mensagens antigas convertidas em
 conversas privadas). Para recomeçar com os dados de demonstração, apague a
 pasta `data/` antes de iniciar.
 
-### Contas de demonstração (senha para todas: `nexo2026`)
+### Contas de demonstração (senha para todas: `conta demo 2026`)
 
 | E-mail | Tipo | Situação na demonstração |
 |---|---|---|
@@ -100,7 +100,7 @@ Top 10; isso não equivale a uma auditoria de segurança completa.
   informado pelo navegador), com limite de 3 MB e de 4000 × 4000 pixels, nome
   aleatório, estrutura do arquivo verificada e remoção de metadados (EXIF com a
   localização da foto, XMP, IPTC, textos embutidos); no máximo 24 itens de
-  portfólio por freelancer; arquivos guardados em `data/uploads`, fora da pasta
+  portfólio por freelancer; foto e capa substituídas são apagadas do disco; arquivos guardados em `data/uploads`, fora da pasta
   pública, e entregues por uma rota que só serve imagens.
 - Cabeçalhos de segurança: Content-Security-Policy sem scripts embutidos,
   `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`.
@@ -112,7 +112,7 @@ Top 10; isso não equivale a uma auditoria de segurança completa.
 - E-mail nunca exibido publicamente; contato pelas mensagens da plataforma.
 - Consentimento registrado no cadastro (data e versão da política).
 - Exportação dos dados do titular em JSON e exclusão da conta: e-mail, senha,
-  dados do perfil e imagens enviadas são apagados; o nome é anonimizado nos
+  dados do perfil e imagens enviadas são apagados; o nome é substituído nos
   pedidos, conversas e avaliações, que permanecem por fazerem parte do histórico
   da outra parte (detalhes na página Privacidade). São recursos relacionados aos
   princípios e direitos da LGPD, não uma garantia de conformidade integral.
@@ -155,7 +155,7 @@ node scripts/manutenibilidade.js # dependências entre módulos, complexidade e 
 ```
 nexo/
 ├── server.js            servidor HTTP: sessão, controle de acesso, CSRF, cabeçalhos
-├── package.json         comandos npm start e npm test; exige Node.js >= 22.5
+├── package.json         comandos npm start e npm test; exige Node.js >= 22.13
 ├── README.md            este arquivo
 ├── lib/                 acesso a dados e módulos de apoio
 │   ├── db.js            esquema do banco, migrações e índices

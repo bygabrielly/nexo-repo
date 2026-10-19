@@ -77,6 +77,7 @@ test('T18 — Respostas trazem cabeçalhos de segurança (CSP sem scripts embuti
   assert.equal(r.headers.get('x-content-type-options'), 'nosniff');
   assert.equal(r.headers.get('x-frame-options'), 'DENY');
   assert.equal(r.headers.get('referrer-policy'), 'same-origin');
+  assert.equal(r.headers.get('permissions-policy'), 'camera=(), microphone=(), geolocation=()');
   const html = await r.text();
   assert.doesNotMatch(html, /\son(submit|click|load)=/i, 'nenhum manipulador de evento embutido');
   assert.doesNotMatch(html, /<script>(?!<\/script>)/, 'nenhum script embutido');

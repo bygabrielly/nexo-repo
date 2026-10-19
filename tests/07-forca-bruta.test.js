@@ -19,7 +19,7 @@ test('T50 — Após 5 tentativas de login com senha errada, novas tentativas sã
     status.push(r.status);
   }
   assert.deepEqual(status, [400, 400, 400, 400, 400]);
-  const sexta = await b.post('/login', { email: 'marina@example.com', password: 'nexo2026' }, { from: '/login' });
+  const sexta = await b.post('/login', { email: 'marina@example.com', password: 'conta demo 2026' }, { from: '/login' });
   assert.equal(sexta.status, 429);
   assert.match(sexta.body, /Muitas tentativas de login sem sucesso/);
   assert.ok(!b.cookies.sid, 'nenhuma sessão criada durante o bloqueio');

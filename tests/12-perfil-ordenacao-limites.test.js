@@ -5,19 +5,24 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 const { startServer, Browser, PNG_1PX } = require('./helpers');
 
 let app;
 test.before(async () => { app = await startServer(); });
 test.after(async () => { await app.close(); });
 
-test('T74 — Edição do perfil: nome, área, biografia, LinkedIn e foto aparecem no perfil público; LinkedIn inválido é recusado', async () => {
+test('T74 — Edição do perfil: dados e foto aparecem no perfil público; LinkedIn inválido é recusado sem gravar imagem; a foto substituída é apagada', async () => {
   const marina = new Browser(app.base);
   await marina.login('marina@example.com');
+  const uploads = path.join(app.dir, 'uploads');
+  const antes = fs.readdirSync(uploads).length;
   const invalido = await marina.post('/perfil/editar', {
     name: 'Marina Alves', area: 'Design Gráfico', bio: 'Designer.', linkedin: 'linkedin.com/in/marina',
-  }, { from: '/perfil/editar', files: {} });
+  }, { from: '/perfil/editar', files: { avatar: { buffer: PNG_1PX, type: 'image/png', name: 'foto.png' } } });
   assert.equal(invalido.status, 400);
+  assert.equal(fs.readdirSync(uploads).length, antes, 'formulário recusado: a imagem enviada não fica gravada');
   assert.match(invalido.body, /O link do LinkedIn deve começar com http:\/\/ ou https:\/\//);
 
   const ok = await marina.post('/perfil/editar', {
@@ -33,7 +38,15 @@ test('T74 — Edição do perfil: nome, área, biografia, LinkedIn e foto aparec
   assert.match(publico.body, /Design e Ilustração/);
   assert.match(publico.body, /Ilustradora e designer com foco em marcas/);
   assert.match(publico.body, /href="https:\/\/www\.linkedin\.com\/in\/marina-exemplo"/);
-  assert.match(publico.body, /src="\/uploads\/[a-f0-9]{24}\.png"/, 'nova foto gravada com nome aleatório');
+  const primeira = publico.body.match(/src="\/uploads\/([a-f0-9]{24}\.png)"/);
+  assert.ok(primeira, 'nova foto gravada com nome aleatório');
+
+  // ao substituir a foto, o arquivo anterior é apagado do servidor
+  await marina.post('/perfil/editar', {
+    name: 'Marina Alves Rocha', area: 'Design e Ilustração', bio: 'Ilustradora.', linkedin: '',
+  }, { from: '/perfil/editar', files: { avatar: { buffer: PNG_1PX, type: 'image/png', name: 'outra.png' } } });
+  assert.ok(!fs.existsSync(path.join(uploads, primeira[1])), 'foto anterior apagada');
+  assert.equal((await fetch(`${app.base}/uploads/${primeira[1]}`)).status, 404);
 });
 
 test('T75 — Busca ordenada por prazo e por data; projetos abertos buscados por palavra-chave', async () => {

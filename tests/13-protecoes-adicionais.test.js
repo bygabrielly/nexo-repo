@@ -59,7 +59,7 @@ test('T79 — Login pela rede: bloqueio da conta atacada não afeta outra conta 
   for (let i = 0; i < 5; i++) {
     assert.equal((await atacante.post('/login', { email: 'rafael@example.com', password: `chute${i}` }, { from: '/login' })).status, 400);
   }
-  assert.equal((await atacante.post('/login', { email: 'rafael@example.com', password: 'nexo2026' }, { from: '/login' })).status, 429);
+  assert.equal((await atacante.post('/login', { email: 'rafael@example.com', password: 'conta demo 2026' }, { from: '/login' })).status, 429);
   const outra = new Browser(app.base);
   const r = await outra.login('juliana@example.com');
   assert.equal(r.status, 302, 'outra conta, mesma origem: login normal');
@@ -83,7 +83,7 @@ test('T80 — Limite de mensagens: a 31ª mensagem em 10 minutos é recusada com
   assert.equal((await marina.post('/mensagens/1', { content: 'Resposta da Marina' }, { from: '/mensagens/1' })).status, 302);
 });
 
-test('T81 — Limite de propostas: o 11º envio em uma hora é recusado com HTTP 429', async () => {
+test('T81 — Limites de propostas e de publicações: o 11º envio em uma hora é recusado com HTTP 429', async () => {
   const freela = new Browser(app.base);
   await freela.login('marina@example.com');
   const proposta = { price: '800', delivery_days: '7', message: 'Proposta de teste com uma descrição de tamanho suficiente.' };
@@ -92,6 +92,15 @@ test('T81 — Limite de propostas: o 11º envio em uma hora é recusado com HTTP
     assert.notEqual(r.status, 429, `envio ${i}`);
   }
   assert.equal((await freela.post('/projetos/1/propostas', proposta, { from: '/projetos/1' })).status, 429);
+
+  const lucas = new Browser(app.base); // outro freelancer (o login de Rafael foi bloqueado no T79)
+  await lucas.login('lucas@example.com');
+  const servico = { title: 'Landing page responsiva', category: 'Programação', description: 'Página de apresentação responsiva com formulário de contato.', price: '900', delivery_days: '5', keywords: 'site, landing' };
+  for (let i = 1; i <= 10; i++) {
+    const r = await lucas.post('/servicos/novo', { ...servico, title: `${servico.title} ${i}` }, { from: '/servicos/novo' });
+    assert.equal(r.status, 302, `publicação ${i}`);
+  }
+  assert.equal((await lucas.post('/servicos/novo', servico, { from: '/servicos/novo' })).status, 429, '11ª publicação recusada');
 });
 
 test('T82 — Imagens enviadas perdem os metadados (EXIF com GPS, textos do PNG, EXIF do WEBP) e continuam válidas', async () => {
@@ -134,6 +143,21 @@ test('T83 — Imagens acima de 4000 px, corrompidas ou além do limite de 24 ite
   const crcErrado = Buffer.from(valida); crcErrado[crcErrado.length - 20] ^= 0xff; // um byte alterado dentro do IDAT
   const r2 = await b.post('/perfil/portfolio', { title: 'Adulterada' }, { from: '/perfil/portfolio', files: { image: { buffer: crcErrado, type: 'image/png', name: 'adulterada.png' } } });
   assert.equal(r2.status, 400, 'checksum do bloco não confere');
+  // WEBP nos formatos simples (VP8 e VP8L), sem o cabeçalho estendido: dimensões lidas de cada formato
+  const webp = (type, data) => {
+    const pad = data.length % 2 ? Buffer.alloc(1) : Buffer.alloc(0);
+    const head = Buffer.alloc(8); head.write(type, 0, 'latin1'); head.writeUInt32LE(data.length, 4);
+    const body = Buffer.concat([Buffer.from('WEBP', 'latin1'), head, data, pad]);
+    const riff = Buffer.alloc(8); riff.write('RIFF', 0, 'latin1'); riff.writeUInt32LE(body.length, 4);
+    return Buffer.concat([riff, body]);
+  };
+  const vp8 = Buffer.alloc(10); vp8.set([0x9d, 0x01, 0x2a], 3); vp8.writeUInt16LE(5000, 6); vp8.writeUInt16LE(2, 8);
+  const vp8l = Buffer.alloc(5); vp8l[0] = 0x2f; vp8l.writeUInt32LE((5000 - 1) | (1 << 14), 1);
+  for (const [nome, buf] of [['vp8.webp', webp('VP8 ', vp8)], ['vp8l.webp', webp('VP8L', vp8l)]]) {
+    const r3 = await b.post('/perfil/portfolio', { title: nome }, { from: '/perfil/portfolio', files: { image: { buffer: buf, type: 'image/webp', name: nome } } });
+    assert.equal(r3.status, 400, nome);
+    assert.match(r3.body, /grande demais/, `${nome}: largura de 5000 px recusada`);
+  }
   assert.equal(fs.readdirSync(uploads()).length, antes, 'nenhum arquivo gravado');
 
   // Limite de quantidade: com 24 itens ativos, um novo envio é recusado e nada é gravado
@@ -165,7 +189,7 @@ test('T84 — Exclusão da conta remove do servidor as imagens enviadas e oculta
   const imagens = [...new Set([...perfil.body.matchAll(/src="\/uploads\/([^"]+)"/g)].map((m) => m[1]))];
   assert.ok(imagens.length >= 3, `foto, capa e portfólio presentes (${imagens.length})`);
   for (const f of imagens) assert.ok(fs.existsSync(path.join(uploads(), f)), `${f} existe antes da exclusão`);
-  const r = await b.post('/conta/excluir', { password: 'nexo2026' }, { from: '/conta' });
+  const r = await b.post('/conta/excluir', { password: 'conta demo 2026' }, { from: '/conta' });
   assert.equal(r.status, 200);
   for (const f of imagens) {
     assert.ok(!fs.existsSync(path.join(uploads(), f)), `${f} apagado do disco`);

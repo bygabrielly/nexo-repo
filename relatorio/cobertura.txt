@@ -1,5 +1,5 @@
 # Cobertura de código da suíte de testes (node --test --experimental-test-coverage)
-# Data: 2026-10-19 00:21 UTC | Node v22.22.0 | SQLite 3.50.4 | Linux 6.18.44-fc-v139 | versão 2.0.0 (package.json)
+# Data: 2026-10-19 01:27 UTC | Node v22.22.0 | SQLite 3.50.4 | Linux 6.18.44-fc-v139 | versão 2.0.1 (package.json)
 # Comando: node --test --experimental-test-coverage --test-concurrency=1 --test-coverage-exclude='tests/**' tests/*.test.js
 # tests 87
 # suites 0
@@ -8,7 +8,7 @@
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 7484.373976
+# duration_ms 10704.7847
 # start of coverage report
 # ------------------------------------------------------------------------
 # file             | line % | branch % | funcs % | uncovered lines
@@ -18,24 +18,24 @@
 #  config.js       | 100.00 |   100.00 |  100.00 | 
 #  db.js           |  97.85 |    83.33 |  100.00 | 222-224 259-261
 #  http-helpers.js |  95.86 |    78.26 |  100.00 | 15-16 62-63 85-86
-#  images.js       |  96.05 |    74.24 |  100.00 | 112-113 115-118
+#  images.js       | 100.00 |    80.60 |  100.00 | 
 #  mailer.js       |  92.00 |    66.67 |  100.00 | 20-21
-#  repo.js         |  98.63 |    84.21 |  100.00 | 60-62 369-371
+#  repo.js         |  98.64 |    84.48 |  100.00 | 64-66 373-375
 #  security.js     | 100.00 |    97.53 |  100.00 | 
 #  seed.js         |  98.44 |    80.00 |  100.00 | 187-189
-#  session.js      | 100.00 |    95.00 |  100.00 | 
+#  session.js      | 100.00 |   100.00 |  100.00 | 
 # routes           |        |          |         | 
 #  account.js      | 100.00 |    83.33 |  100.00 | 
 #  auth.js         |  98.68 |    67.35 |  100.00 | 95-96
 #  index.js        | 100.00 |   100.00 |  100.00 | 
 #  messages.js     | 100.00 |    76.92 |   83.33 | 
 #  orders.js       |  96.17 |    79.76 |   89.47 | 142-144 147-149 151
-#  profile.js      |  95.97 |    76.19 |  100.00 | 42-43 106-108
+#  profile.js      |  96.15 |    77.08 |  100.00 | 44-45 112-114
 #  projects.js     |  96.69 |    75.56 |   95.00 | 133-135 138-140
 #  public.js       | 100.00 |    79.41 |  100.00 | 
 #  services.js     |  97.71 |    77.42 |   92.86 | 93-95
-#  util.js         | 100.00 |    80.95 |  100.00 | 
-# server.js        |  92.58 |    88.04 |   94.12 | 98-102 236-241 245-252
+#  util.js         | 100.00 |    78.26 |  100.00 | 
+# server.js        |  92.58 |    87.91 |   94.12 | 98-102 236-241 245-252
 # views            |        |          |         | 
 #  account.js      | 100.00 |    70.59 |  100.00 | 
 #  auth.js         | 100.00 |    90.48 |  100.00 | 
@@ -48,6 +48,6 @@
 #  projects.js     | 100.00 |    81.25 |  100.00 | 
 #  public.js       |  99.70 |    83.16 |   95.24 | 153
 # ------------------------------------------------------------------------
-# all files        |  98.39 |    82.55 |   97.62 | 
+# all files        |  98.53 |    82.91 |   97.63 | 
 # ------------------------------------------------------------------------
 # end of coverage report

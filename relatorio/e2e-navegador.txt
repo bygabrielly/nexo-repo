@@ -1,4 +1,4 @@
-# Testes de ponta a ponta em navegador real — Chromium 141.0.7390.37 | Node v22.22.0 | 2026-10-19 00:23 UTC | versão 2.0.0 (package.json)
+# Testes de ponta a ponta em navegador real — Chromium 141.0.7390.37 | Node v22.22.0 | 2026-10-19 01:28 UTC | versão 2.0.1 (package.json)
 ok - E1 — Cadastro: a confirmação de senha diferente é apontada pelo navegador antes do envio
 ok - E2 — Teclado: o primeiro Tab leva ao link "Pular para o conteúdo", que move o foco para o conteúdo principal
 ok - E3 — Fluxo da cliente: entrar, buscar, abrir o serviço e contratar; o pedido aparece como aguardando resposta
